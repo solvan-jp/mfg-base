@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MFG Base by SOLVAN - AI Sales Director が経営判断をサポート。ダッシュボード＆戦略立案プラットフォーム。">
-    <title>MFG Base | AI Sales Director - SOLVAN</title>
+    <meta name="description" content="MFG Base - AIで日本の製造業の営業を再発明する。製造業特化型 営業DXプラットフォーム by SOLVAN">
+    <title>MFG Base | AIで日本の製造業の営業を再発明する</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;800;900&display=swap"
         rel="stylesheet">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -17,450 +19,419 @@
                 extend: {
                     fontFamily: {
                         sans: ['Noto Sans JP', 'sans-serif'],
+                    },
+                    colors: {
+                        navy: {
+                            950: '#020617',
+                            900: '#0f172a',
+                            800: '#1e293b',
+                        },
+                        electric: {
+                            500: '#3b82f6',
+                            400: '#60a5fa',
+                        },
+                        teal: {
+                            500: '#14b8a6',
+                            400: '#2dd4bf',
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        ::-webkit-scrollbar {
-            width: 5px;
+        html {
+            scroll-behavior: smooth;
         }
 
-        ::-webkit-scrollbar-track {
-            background: transparent;
+        /* グリッド背景 */
+        .grid-bg {
+            background-image:
+                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
+            background-size: 60px 60px;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: rgba(100, 116, 139, 0.4);
-            border-radius: 3px;
+        /* 光る粒子エフェクト */
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            pointer-events: none;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(100, 116, 139, 0.6);
+        .particle {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: rgba(59, 130, 246, 0.6);
+            border-radius: 50%;
+            animation: float 15s infinite ease-in-out;
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
         }
 
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-in-out;
-        }
+        @keyframes float {
 
-        @keyframes fadeIn {
-            from {
+            0%,
+            100% {
+                transform: translateY(0) translateX(0);
                 opacity: 0;
-                transform: translateY(5px);
             }
 
-            to {
+            10% {
                 opacity: 1;
-                transform: translateY(0);
             }
+
+            90% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-100vh) translateX(50px);
+                opacity: 0;
+            }
+        }
+
+        /* グラデーショングロー */
+        .glow-blue {
+            box-shadow: 0 0 60px rgba(59, 130, 246, 0.3);
+        }
+
+        .glow-teal {
+            box-shadow: 0 0 60px rgba(20, 184, 166, 0.3);
+        }
+
+        /* グラスモーフィズム */
+        .glass {
+            background: rgba(30, 41, 59, 0.4);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        /* フェードインアニメーション */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* ヒーローグラデーション */
+        .hero-gradient {
+            background: radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 50%, rgba(20, 184, 166, 0.1) 0%, transparent 40%),
+                linear-gradient(180deg, #020617 0%, #0f172a 100%);
+        }
+
+        /* CTAボタンホバーエフェクト */
+        .cta-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .cta-btn:hover::before {
+            left: 100%;
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4);
+        }
+
+        /* カードホバー */
+        .feature-card {
+            transition: all 0.4s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(59, 130, 246, 0.5);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 40px rgba(59, 130, 246, 0.1);
+        }
+
+        /* テキストグラデーション */
+        .text-gradient {
+            background: linear-gradient(135deg, #60a5fa 0%, #2dd4bf 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
     </style>
 </head>
 
-<body class="font-sans bg-slate-50 text-slate-800">
-    <div class="flex h-screen">
+<body class="font-sans bg-navy-950 text-white antialiased">
 
-        <!-- サイドバー -->
-        <div class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-20 flex-shrink-0">
-            <div class="p-6 border-b border-slate-800 bg-slate-950/50">
-                <p class="text-[10px] text-blue-400 tracking-widest uppercase mb-2 font-bold opacity-80">Powered by
-                    SOLVAN</p>
-                <h1 class="font-extrabold text-2xl tracking-tight text-white flex items-center gap-2">
-                    <span class="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">◆</span> MFG Base
+    <!-- 背景エフェクト -->
+    <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
+    <div class="particles z-0">
+        <div class="particle" style="left: 10%; top: 100%; animation-delay: 0s;"></div>
+        <div class="particle" style="left: 20%; top: 100%; animation-delay: 2s;"></div>
+        <div class="particle" style="left: 30%; top: 100%; animation-delay: 4s;"></div>
+        <div class="particle" style="left: 40%; top: 100%; animation-delay: 1s;"></div>
+        <div class="particle" style="left: 50%; top: 100%; animation-delay: 3s;"></div>
+        <div class="particle" style="left: 60%; top: 100%; animation-delay: 5s;"></div>
+        <div class="particle" style="left: 70%; top: 100%; animation-delay: 2.5s;"></div>
+        <div class="particle" style="left: 80%; top: 100%; animation-delay: 4.5s;"></div>
+        <div class="particle" style="left: 90%; top: 100%; animation-delay: 1.5s;"></div>
+    </div>
+
+    <!-- ナビゲーション -->
+    <nav class="fixed top-0 left-0 right-0 z-50 glass">
+        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <span class="text-electric-500 text-2xl font-black">◆</span>
+                <span class="text-xl font-bold tracking-tight">MFG Base</span>
+                <span class="text-[10px] text-slate-500 tracking-widest uppercase ml-2">by SOLVAN</span>
+            </div>
+            <a href="./app.html"
+                class="bg-electric-500/20 hover:bg-electric-500/30 border border-electric-500/50 text-electric-400 px-4 py-2 rounded-lg text-sm font-bold transition">
+                ログイン
+            </a>
+        </div>
+    </nav>
+
+    <!-- ヒーローセクション -->
+    <section class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
+        <!-- デコレーション -->
+        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-electric-500/10 rounded-full blur-[120px]"></div>
+        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-[100px]"></div>
+
+        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
+            <div class="fade-in">
+                <p class="text-electric-400 text-sm font-bold tracking-widest uppercase mb-6">
+                    Manufacturing × AI Platform
+                </p>
+                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
+                    AIで日本の製造業の<br>
+                    <span class="text-gradient">営業を再発明する</span>
                 </h1>
-                <div
-                    class="mt-3 inline-flex items-center bg-blue-950/80 border border-blue-900/50 rounded-full px-3 py-1">
-                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse shadow-[0_0_8px_#22c55e]"></span>
-                    <p class="text-[11px] font-semibold text-blue-200 tracking-wider">AI Sales Director</p>
+                <p class="text-xl sm:text-2xl text-slate-400 font-medium mb-10">
+                    "売れる仕組み"をすべての企業に
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                    <a href="./app.html"
+                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl">
+                        <span>無料でデモを試す</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
+                    <a href="#contact"
+                        class="inline-flex items-center gap-2 border border-slate-600 hover:border-slate-500 hover:bg-slate-800/50 text-white text-lg font-bold px-8 py-5 rounded-xl transition">
+                        <span>お問い合わせ</span>
+                    </a>
                 </div>
+                <p class="text-slate-500 text-sm mt-4">クレジットカード不要・即日利用可能</p>
             </div>
 
-            <nav class="p-4 space-y-2">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard"
-                    class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all bg-blue-600 text-white shadow-lg shadow-blue-900/20">
-                    <span class="text-lg mr-3">📊</span>
-                    <span class="font-bold text-sm">経営コックピット</span>
-                </button>
-                <button onclick="switchTab('report')" id="nav-report"
-                    class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
-                    <span class="text-lg mr-3">📝</span>
-                    <span class="font-bold text-sm">AI戦略日報入力</span>
-                </button>
-            </nav>
-
-            <!-- ミニ履歴 -->
-            <div class="flex-1 p-4 border-t border-slate-800">
-                <p class="text-[10px] text-slate-500 mb-3 font-bold uppercase tracking-wider">Recent Activity</p>
-                <div id="mini-history" class="space-y-2 text-xs">
-                    <div class="flex items-center text-slate-400 hover:text-white transition cursor-pointer">
-                        <div class="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>久留米精密工業 (A)
-                    </div>
-                    <div class="flex items-center text-slate-400 hover:text-white transition cursor-pointer">
-                        <div class="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></div>博多食品加工 (B)
-                    </div>
-                    <div class="flex items-center text-slate-400 hover:text-white transition cursor-pointer">
-                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>山田精密工業 (A)
-                    </div>
-                </div>
-            </div>
-
-            <div class="p-4 border-t border-slate-800 bg-slate-950/30">
-                <button onclick="exportData()"
-                    class="text-xs text-slate-500 hover:text-blue-400 w-full text-left flex items-center transition mb-2">
-                    <span class="mr-2">📤</span> データをエクスポート
-                </button>
-                <button onclick="clearAllData()"
-                    class="text-xs text-slate-500 hover:text-red-400 w-full text-left flex items-center transition">
-                    <span class="mr-2">🗑</span> データを全消去
-                </button>
-                <p class="text-[10px] text-slate-700 mt-3 pt-2 border-t border-slate-800">© 2026 SOLVAN Inc.</p>
+            <!-- スクロールインジケーター -->
+            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+                <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                </svg>
             </div>
         </div>
+    </section>
 
-        <!-- メインコンテンツ -->
-        <div class="flex-1 overflow-y-auto bg-slate-100 relative">
+    <!-- サービス紹介セクション -->
+    <section class="py-32 relative z-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-20 fade-in">
+                <p class="text-teal-400 text-sm font-bold tracking-widest uppercase mb-4">
+                    Sales DX Platform for Manufacturing
+                </p>
+                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black mb-6">
+                    製造業特化型<br class="sm:hidden">営業DXプラットフォーム
+                </h2>
+                <p class="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
+                    「良いモノを作れば売れる」時代の終わり。<br>
+                    属人化しやすい製造業の営業をAIで科学し、<br>
+                    組織の「売る力」を最大化します。
+                </p>
+            </div>
+
+            <!-- 機能カード -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <!-- カード1 -->
+                <div class="fade-in feature-card glass rounded-2xl p-8 border border-slate-700/50">
+                    <div
+                        class="w-14 h-14 bg-gradient-to-br from-electric-500/20 to-electric-500/5 rounded-xl flex items-center justify-center mb-6 glow-blue">
+                        <span class="text-3xl">🎙️</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">営業日報の自動化</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        音声入力とAI要約で、移動中に日報が完了。商談直後の鮮度の高い情報を逃しません。
+                    </p>
+                </div>
+
+                <!-- カード2 -->
+                <div class="fade-in feature-card glass rounded-2xl p-8 border border-slate-700/50"
+                    style="transition-delay: 0.1s;">
+                    <div
+                        class="w-14 h-14 bg-gradient-to-br from-teal-500/20 to-teal-500/5 rounded-xl flex items-center justify-center mb-6 glow-teal">
+                        <span class="text-3xl">🧠</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">顧客ニーズの資産化</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        会話データから「潜在ニーズ」をAIが抽出・分析。属人化した顧客理解を組織の資産に変えます。
+                    </p>
+                </div>
+
+                <!-- カード3 -->
+                <div class="fade-in feature-card glass rounded-2xl p-8 border border-slate-700/50"
+                    style="transition-delay: 0.2s;">
+                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500/20 to-purple-500/5 rounded-xl flex items-center justify-center mb-6"
+                        style="box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);">
+                        <span class="text-3xl">🎯</span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3">提案の最適化</h3>
+                    <p class="text-slate-400 leading-relaxed">
+                        過去の成功事例に基づき、最適な提案内容をAIがレコメンド。新人でもエースの提案ができます。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA セクション -->
+    <section class="py-32 relative z-10">
+        <div class="max-w-4xl mx-auto px-6">
             <div
-                class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none">
-            </div>
+                class="fade-in glass rounded-3xl p-12 md:p-16 text-center border border-slate-700/50 relative overflow-hidden">
+                <!-- グロー -->
+                <div class="absolute -top-20 -right-20 w-60 h-60 bg-electric-500/20 rounded-full blur-[80px]"></div>
+                <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-teal-500/20 rounded-full blur-[80px]"></div>
 
-            <!-- ===== ダッシュボード ===== -->
-            <div id="view-dashboard" class="p-8 max-w-6xl mx-auto space-y-6 animate-fade-in relative z-10">
-                <!-- ヘッダー -->
-                <div class="flex justify-between items-end mb-2">
-                    <div>
-                        <h2 class="text-2xl font-bold text-slate-800">Executive Dashboard</h2>
-                        <p class="text-sm text-slate-500">2026年2月3日 現在の営業状況概況</p>
-                    </div>
-                    <button
-                        class="bg-white border border-slate-300 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition">
-                        🔄 Updated: Just now
-                    </button>
-                </div>
-
-                <!-- KPIカード -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- 売上予測 -->
-                    <div
-                        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
-                        <div
-                            class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-blue-600">
-                            <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.35 0 .81.48 1.55 2.56 2.12 2.08.56 4.48 1.68 4.48 3.61 0 1.84-1.27 2.88-3.31 3.24z" />
-                            </svg>
-                        </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">今月の売上着地見込</p>
-                        <p class="text-3xl font-extrabold text-slate-800 mt-2">¥12,400,000</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-green-600">
-                            <span>▲ 達成率 85%</span>
-                            <span class="text-slate-400 font-normal ml-2">あと ¥2.1M</span>
-                        </div>
-                        <div class="w-full bg-slate-100 h-1.5 mt-4 rounded-full overflow-hidden">
-                            <div class="bg-blue-600 h-full" style="width: 85%"></div>
-                        </div>
-                    </div>
-
-                    <!-- 成約確率 -->
-                    <div
-                        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
-                        <div
-                            class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-purple-600">
-                            <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
-                            </svg>
-                        </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">AI 成約確率 (平均)</p>
-                        <p class="text-3xl font-extrabold text-slate-800 mt-2">64.2%</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-blue-600">
-                            <span>先月比 +12pt ↑</span>
-                        </div>
-                        <p class="text-xs text-slate-400 mt-3">MFG Base導入により提案精度が向上中</p>
-                    </div>
-
-                    <!-- アラート -->
-                    <div
-                        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
-                        <div
-                            class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-red-600">
-                            <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
-                            </svg>
-                        </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">アラート案件</p>
-                        <p class="text-3xl font-extrabold text-slate-800 mt-2">3件</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-red-500">
-                            <span>⚠️ 要注意</span>
-                        </div>
-                        <p class="text-xs text-slate-400 mt-3">競合との価格乖離・担当者変更など</p>
-                    </div>
-                </div>
-
-                <!-- 下部 2カラム -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- 課題分析 -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
-                        <h3 class="font-bold text-slate-700 mb-4 flex items-center">
-                            <span class="bg-slate-100 p-1.5 rounded mr-2">📉</span>
-                            失注・難航理由のAI分析
-                        </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-bold text-slate-700">技術継承への不安 (品質懸念)</span>
-                                    <span class="font-bold text-indigo-600">45%</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                                    <div class="bg-indigo-600 h-full" style="width: 45%"></div>
-                                </div>
-                                <p class="text-xs text-slate-400 mt-1">→ AIアドバイス: 動画マニュアル機能の提案を強化せよ</p>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-bold text-slate-700">価格競争 (コスト)</span>
-                                    <span class="font-bold text-blue-600">30%</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                                    <div class="bg-blue-500 h-full" style="width: 30%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-bold text-slate-700">その他 (納期・仕様など)</span>
-                                    <span class="font-bold text-slate-500">25%</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                                    <div class="bg-slate-400 h-full" style="width: 25%"></div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 今週の勝負案件 -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-slate-700 mb-4 flex items-center">
-                            <span class="bg-slate-100 p-1.5 rounded mr-2">🔥</span>
-                            今週の勝負案件
-                        </h3>
-                        <div class="space-y-3">
-                            <div
-                                class="p-3 bg-blue-50 rounded-lg border border-blue-100 hover:border-blue-300 transition cursor-pointer">
-                                <div class="flex justify-between items-start">
-                                    <span class="text-xs font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded">Rank
-                                        S</span>
-                                    <span class="text-xs text-slate-400">明日訪問</span>
-                                </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800">久留米精密工業</p>
-                                <p class="text-xs text-slate-500 mt-1">戦略: コストではなく品質で勝負</p>
-                            </div>
-                            <div
-                                class="p-3 bg-amber-50 rounded-lg border border-amber-100 hover:border-amber-300 transition cursor-pointer">
-                                <div class="flex justify-between items-start">
-                                    <span
-                                        class="text-xs font-bold text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded">Rank
-                                        A</span>
-                                    <span class="text-xs text-slate-400">水曜連絡</span>
-                                </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800">山田精密工業</p>
-                                <p class="text-xs text-slate-500 mt-1">戦略: 競合対策シート持参</p>
-                            </div>
-                            <div
-                                class="p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition cursor-pointer opacity-70">
-                                <div class="flex justify-between items-start">
-                                    <span
-                                        class="text-xs font-bold text-slate-500 bg-slate-200 px-1.5 py-0.5 rounded">Rank
-                                        B</span>
-                                    <span class="text-xs text-slate-400">木曜連絡</span>
-                                </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800">博多食品加工</p>
-                                <p class="text-xs text-slate-500 mt-1">戦略: 技術継承のデータ化提案</p>
-                            </div>
-                        </div>
-                    </div>
+                <div class="relative z-10">
+                    <h2 class="text-3xl sm:text-4xl font-black mb-6">
+                        製造業の営業を、<br class="sm:hidden">
+                        <span class="text-gradient">次のステージへ</span>
+                    </h2>
+                    <p class="text-slate-400 text-lg mb-10">
+                        今すぐMFG Baseをお試しください。<br>
+                        まずはデモ版で、AIの威力を体感してください。
+                    </p>
+                    <a href="./app.html"
+                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl">
+                        <span>無料でデモを試す</span>
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                        </svg>
+                    </a>
                 </div>
             </div>
-
-            <!-- ===== AI戦略日報 ===== -->
-            <div id="view-report" class="p-8 max-w-4xl mx-auto hidden animate-fade-in relative z-10">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
-                        <div class="flex items-center">
-                            <span class="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded mr-3">INPUT</span>
-                            <h2 class="text-base font-bold text-slate-800">商談メモを入力</h2>
-                        </div>
-                        <span class="text-xs text-slate-400 font-mono bg-slate-100 px-2 py-1 rounded">Mode: Demo</span>
-                    </div>
-                    <div class="p-6">
-                        <textarea id="raw-notes"
-                            class="w-full h-40 p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none text-slate-700 bg-slate-50 focus:bg-white"
-                            placeholder="ここに商談の雑多なメモを入力してください...
-
-例：
-久留米の〇〇鉄工所。社長と面談。人手不足で納期遅れが起きているらしい。AIでの自動見積もりに興味ありそう。"></textarea>
-                        <div class="flex justify-between items-center mt-2 mb-3">
-                            <span id="char-count" class="text-xs text-slate-400">0 文字</span>
-                            <span class="text-xs text-slate-400">💡 Ctrl+Enter で送信</span>
-                        </div>
-                        <button id="generate-btn"
-                            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl transition transform active:scale-[0.99] shadow-lg shadow-blue-500/20 flex justify-center items-center text-lg cursor-pointer">
-                            <span class="mr-2">⚡</span> AI Sales Director に戦略を立案させる
-                        </button>
-                    </div>
-                </div>
-
-                <!-- 結果エリア -->
-                <div id="result-area"
-                    class="bg-white rounded-2xl shadow-xl border border-blue-100 overflow-hidden hidden ring-4 ring-blue-500/10">
-                    <div
-                        class="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4 flex justify-between items-center">
-                        <h2 class="text-base font-bold text-white flex items-center">
-                            <span class="text-green-400 mr-2">◆</span> STRATEGIC REPORT
-                        </h2>
-                        <div class="flex gap-2">
-                            <button id="copy-btn"
-                                class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-medium transition flex items-center cursor-pointer">
-                                📋 コピー
-                            </button>
-                            <button id="save-btn"
-                                class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md flex items-center border border-blue-400/50 transition active:scale-95 cursor-pointer">
-                                <span class="mr-2">💾</span> DBに保存
-                            </button>
-                        </div>
-                    </div>
-                    <div class="p-8 bg-slate-50">
-                        <div id="output"
-                            class="whitespace-pre-wrap text-[15px] leading-relaxed font-mono text-slate-800"></div>
-                    </div>
-                    <div class="px-6 py-3 bg-slate-100 border-t border-slate-200 flex justify-end">
-                        <button id="regenerate-btn"
-                            class="text-xs text-slate-500 hover:text-blue-600 transition flex items-center gap-1 cursor-pointer">
-                            🔄 再生成する
-                        </button>
-                    </div>
-                </div>
-            </div>
-
         </div>
-    </div>
+    </section>
 
-    <!-- Toast -->
-    <div id="toast"
-        class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-20 bg-slate-900 text-white px-6 py-3 rounded-xl shadow-2xl text-sm font-medium transition-transform duration-300 z-50">
-        <span id="toast-message"></span>
-    </div>
+    <!-- フッター -->
+    <footer id="contact" class="py-20 border-t border-slate-800 relative z-10">
+        <div class="max-w-6xl mx-auto px-6">
+            <!-- Contact見出し -->
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-2xl font-bold mb-4">Contact Us</h2>
+                <p class="text-slate-400 text-sm mb-6">
+                    製品に関するご質問や、営業DXに関するご相談など、お気軽にお問い合わせください。<br>
+                    原則24時間以内に代表より直接ご返信いたします。
+                </p>
+                <a href="mailto:h.yamana@solvan.jp"
+                    class="text-electric-400 hover:text-electric-300 text-lg font-bold underline decoration-electric-500/30 transition">
+                    h.yamana@solvan.jp
+                </a>
+            </div>
 
+            <div class="grid md:grid-cols-2 gap-12 mb-16">
+                <!-- 会社情報 -->
+                <div class="fade-in">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span class="text-electric-500 text-3xl font-black">◆</span>
+                        <span class="text-2xl font-bold tracking-tight">MFG Base</span>
+                    </div>
+                    <p class="text-slate-400 mb-4">株式会社SOLVAN（設立準備中）</p>
+                    <p class="text-slate-500 text-sm mb-2">代表：山名 遼希</p>
+                    <p class="text-slate-500 text-sm mb-2">所在地：福岡県久留米市</p>
+                    <p class="text-slate-500 text-sm">
+                        <a href="mailto:h.yamana@solvan.jp"
+                            class="hover:text-electric-400 transition">h.yamana@solvan.jp</a>
+                    </p>
+                </div>
+
+                <!-- ミッション・バリュー -->
+                <div class="fade-in" style="transition-delay: 0.1s;">
+                    <h3 class="text-lg font-bold mb-4 text-gradient inline-block">Mission</h3>
+                    <p class="text-slate-300 text-lg mb-8">
+                        AIで日本の製造業の営業を再発明する
+                    </p>
+
+                    <h3 class="text-lg font-bold mb-4 text-slate-400">Values</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <span class="glass px-4 py-2 rounded-full text-sm font-medium">Speed</span>
+                        <span class="glass px-4 py-2 rounded-full text-sm font-medium">Clarity</span>
+                        <span class="glass px-4 py-2 rounded-full text-sm font-medium">Ownership</span>
+                        <span class="glass px-4 py-2 rounded-full text-sm font-medium">Craftsmanship</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- コピーライト -->
+            <div class="text-center pt-8 border-t border-slate-800">
+                <p class="text-slate-600 text-sm">© 2026 SOLVAN Inc. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- スクロールアニメーション -->
     <script>
-        // ===== タブ切り替え =====
-        window.switchTab = function (tabName) {
-            var dashboard = document.getElementById('view-dashboard');
-            var report = document.getElementById('view-report');
-            var navDash = document.getElementById('nav-dashboard');
-            var navRep = document.getElementById('nav-report');
-
-            if (tabName === 'dashboard') {
-                dashboard.classList.remove('hidden');
-                report.classList.add('hidden');
-                navDash.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-                navDash.classList.remove('text-slate-400', 'hover:bg-slate-800');
-                navRep.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-                navRep.classList.add('text-slate-400', 'hover:bg-slate-800');
-            } else {
-                dashboard.classList.add('hidden');
-                report.classList.remove('hidden');
-                navRep.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-                navRep.classList.remove('text-slate-400', 'hover:bg-slate-800');
-                navDash.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-                navDash.classList.add('text-slate-400', 'hover:bg-slate-800');
-            }
-        };
-
-        // ===== Toast =====
-        function showToast(message, type) {
-            var toast = document.getElementById('toast');
-            var toastMessage = document.getElementById('toast-message');
-            toastMessage.textContent = message;
-            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl text-sm font-medium transition-transform duration-300 z-50';
-            if (type === 'success') toast.classList.add('bg-green-600', 'text-white');
-            else if (type === 'error') toast.classList.add('bg-red-600', 'text-white');
-            else toast.classList.add('bg-slate-900', 'text-white');
-            toast.classList.remove('translate-y-20');
-            setTimeout(function () { toast.classList.add('translate-y-20'); }, 3000);
-        }
-
-        // ===== デモ戦略生成 =====
-        function generateDemoStrategy(notes) {
-            var company = notes.match(/([^\s。、]+(?:精機|製作所|工業|鉄工所|工場))/);
-            company = company ? company[1] : '対象企業';
-            var person = notes.match(/([^\s。、]+(?:社長|部長|課長|工場長))/);
-            person = person ? person[1] : '決裁権限者';
-
-            return '【デモモード：AI戦略生成結果】\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n【1. 基本情報】\n・対象案件：' + company + '\n・担当者：' + person + '\n・フェーズ：クロージング段階\n\n【2. 真の課題 (Deep Insight)】 🎯\n・メモからは「価格」への懸念が見られるが、データ分析によると、この顧客の真の課題は「安さ」ではない。\n・「納入後のトラブル対応への不安」が最大のボトルネックになっている可能性が高い（過去の類似事例より90%適合）。\n\n【3. AI戦略 (Strategic Move)】 🏆\n・価格交渉には応じるな。その代わり「24時間の遠隔サポート体制」をオプションで付帯せよ。\n・これにより、顧客の不安を払拭しつつ、利益率を維持できる。\n\n【4. 成約確率】 📊\n・現在：45% → 戦略実行後：82%\n\n【5. キラーフレーズ】 💬\n「工場長、値引きよりも『夜中にラインが止まらない安心』を買いませんか？」\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n【AI Sales Director 総評】\nこの案件は勝てる。攻めろ。';
-        }
-
-        function exportData() { showToast('エクスポート機能 (デモ)', 'success'); }
-        function clearAllData() { if (confirm('データを消去しますか？')) showToast('消去しました', 'success'); }
-
-        // ===== DOMContentLoaded =====
         document.addEventListener('DOMContentLoaded', function () {
-            var generateBtn = document.getElementById('generate-btn');
-            var saveBtn = document.getElementById('save-btn');
-            var copyBtn = document.getElementById('copy-btn');
-            var regenerateBtn = document.getElementById('regenerate-btn');
-            var output = document.getElementById('output');
-            var resultArea = document.getElementById('result-area');
-            var rawNotes = document.getElementById('raw-notes');
-            var charCount = document.getElementById('char-count');
-
-            rawNotes.addEventListener('input', function () {
-                charCount.textContent = rawNotes.value.length + ' 文字';
+            // AOS初期化
+            AOS.init({
+                duration: 800,
+                once: true,
             });
 
-            rawNotes.addEventListener('keydown', function (e) {
-                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
-                    e.preventDefault();
-                    generateBtn.click();
-                }
-            });
+            // フェードインアニメーション（カスタム）
+            const fadeElements = document.querySelectorAll('.fade-in');
 
-            generateBtn.addEventListener('click', function () {
-                var text = rawNotes.value.trim();
-                if (!text) {
-                    showToast('メモを入力してください', 'error');
-                    rawNotes.focus();
-                    return;
-                }
-
-                resultArea.classList.remove('hidden');
-                resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                output.innerHTML = '<div class="flex items-center text-blue-600 font-bold animate-pulse"><span class="text-2xl mr-3">🧠</span> AI Sales Director がデータを解析中...<br><span class="text-sm text-slate-500 font-normal ml-10 mt-1">過去の数千件の成約パターンと照合しています</span></div>';
-
-                setTimeout(function () {
-                    output.innerText = generateDemoStrategy(text);
-                    showToast('戦略立案が完了しました！', 'success');
-                }, 2000);
-            });
-
-            regenerateBtn.addEventListener('click', function () {
-                if (rawNotes.value.trim()) generateBtn.click();
-            });
-
-            copyBtn.addEventListener('click', function () {
-                var text = output.innerText;
-                if (!text || text.includes('解析中')) return;
-                navigator.clipboard.writeText(text).then(function () {
-                    showToast('コピーしました！', 'success');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
                 });
+            }, {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
             });
 
-            saveBtn.addEventListener('click', function () {
-                saveBtn.innerHTML = '✅ 保存完了！';
-                saveBtn.classList.add('bg-green-600', 'border-green-400');
-                setTimeout(function () {
-                    saveBtn.innerHTML = '<span class="mr-2">💾</span> DBに保存';
-                    saveBtn.classList.remove('bg-green-600', 'border-green-400');
-                }, 2000);
-                showToast('保存しました！', 'success');
+            fadeElements.forEach(el => observer.observe(el));
+
+            // ナビバーのスクロール効果
+            const nav = document.querySelector('nav');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 50) {
+                    nav.classList.add('shadow-2xl');
+                } else {
+                    nav.classList.remove('shadow-2xl');
+                }
             });
         });
     </script>
