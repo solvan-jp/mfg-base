@@ -173,6 +173,52 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
+        /* モーダル */
+        .modal-overlay {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            transform: scale(0.9) translateY(20px);
+            transition: transform 0.3s ease;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+
+        .blur-bg {
+            filter: blur(8px);
+            transition: filter 0.3s ease;
+        }
+
+        /* スピナー */
+        .spinner {
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
     </style>
 </head>
 
@@ -200,10 +246,10 @@
                 <span class="text-xl font-bold tracking-tight">MFG Base</span>
                 <span class="text-[10px] text-slate-500 tracking-widest uppercase ml-2">by SOLVAN</span>
             </div>
-            <a href="./app.html"
-                class="bg-electric-500/20 hover:bg-electric-500/30 border border-electric-500/50 text-electric-400 px-4 py-2 rounded-lg text-sm font-bold transition">
+            <button onclick="openLoginModal()"
+                class="bg-electric-500/20 hover:bg-electric-500/30 border border-electric-500/50 text-electric-400 px-4 py-2 rounded-lg text-sm font-bold transition cursor-pointer">
                 ログイン
-            </a>
+            </button>
         </div>
     </nav>
 
@@ -226,28 +272,20 @@
                     "売れる仕組み"をすべての企業に
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <a href="./app.html"
-                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl">
+                    <button onclick="openLoginModal()"
+                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl cursor-pointer">
                         <span>無料でデモを試す</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
-                    </a>
+                    </button>
                     <a href="#contact"
                         class="inline-flex items-center gap-2 border border-slate-600 hover:border-slate-500 hover:bg-slate-800/50 text-white text-lg font-bold px-8 py-5 rounded-xl transition">
                         <span>お問い合わせ</span>
                     </a>
                 </div>
                 <p class="text-slate-500 text-sm mt-4">クレジットカード不要・即日利用可能</p>
-            </div>
-
-            <!-- スクロールインジケーター -->
-            <div class="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
-                <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-                </svg>
             </div>
         </div>
     </section>
@@ -330,14 +368,14 @@
                         今すぐMFG Baseをお試しください。<br>
                         まずはデモ版で、AIの威力を体感してください。
                     </p>
-                    <a href="./app.html"
-                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl">
+                    <button onclick="openLoginModal()"
+                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl cursor-pointer">
                         <span>無料でデモを試す</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
-                    </a>
+                    </button>
                 </div>
             </div>
         </div>
@@ -353,9 +391,9 @@
                     製品に関するご質問や、営業DXに関するご相談など、お気軽にお問い合わせください。<br>
                     原則24時間以内に代表より直接ご返信いたします。
                 </p>
-                <a href="mailto:h.yamana@solvan.jp"
+                <a href="mailto:info@solvan.jp"
                     class="text-electric-400 hover:text-electric-300 text-lg font-bold underline decoration-electric-500/30 transition">
-                    h.yamana@solvan.jp
+                    info@solvan.jp
                 </a>
             </div>
 
@@ -370,8 +408,7 @@
                     <p class="text-slate-500 text-sm mb-2">代表：山名 遼希</p>
                     <p class="text-slate-500 text-sm mb-2">所在地：福岡県久留米市</p>
                     <p class="text-slate-500 text-sm">
-                        <a href="mailto:h.yamana@solvan.jp"
-                            class="hover:text-electric-400 transition">h.yamana@solvan.jp</a>
+                        <a href="mailto:info@solvan.jp" class="hover:text-electric-400 transition">info@solvan.jp</a>
                     </p>
                 </div>
 
@@ -382,12 +419,13 @@
                         AIで日本の製造業の営業を再発明する
                     </p>
 
-                    <h3 class="text-lg font-bold mb-4 text-slate-400">Values</h3>
+                    <h3 class="text-lg font-bold mb-4 text-gradient inline-block">Values</h3>
                     <div class="flex flex-wrap gap-3">
-                        <span class="glass px-4 py-2 rounded-full text-sm font-medium">Speed</span>
-                        <span class="glass px-4 py-2 rounded-full text-sm font-medium">Clarity</span>
-                        <span class="glass px-4 py-2 rounded-full text-sm font-medium">Ownership</span>
-                        <span class="glass px-4 py-2 rounded-full text-sm font-medium">Craftsmanship</span>
+                        <span class="glass px-4 py-2 rounded-full text-sm font-medium text-slate-300">Speed</span>
+                        <span class="glass px-4 py-2 rounded-full text-sm font-medium text-slate-300">Clarity</span>
+                        <span class="glass px-4 py-2 rounded-full text-sm font-medium text-slate-300">Ownership</span>
+                        <span
+                            class="glass px-4 py-2 rounded-full text-sm font-medium text-slate-300">Craftsmanship</span>
                     </div>
                 </div>
             </div>
@@ -399,8 +437,124 @@
         </div>
     </footer>
 
-    <!-- スクロールアニメーション -->
+    <!-- ログインモーダル -->
+    <div id="loginModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <!-- 背景オーバーレイ -->
+        <div class="absolute inset-0 bg-navy-950/80 backdrop-blur-sm" onclick="closeLoginModal()"></div>
+
+        <!-- モーダルコンテンツ -->
+        <div class="modal-content relative w-full max-w-md">
+            <div class="glass rounded-2xl p-8 border border-electric-500/30 shadow-2xl"
+                style="box-shadow: 0 0 80px rgba(59, 130, 246, 0.2);">
+                <!-- 閉じるボタン -->
+                <button onclick="closeLoginModal()"
+                    class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                        </path>
+                    </svg>
+                </button>
+
+                <!-- ヘッダー -->
+                <div class="text-center mb-8">
+                    <div class="flex items-center justify-center gap-2 mb-4">
+                        <span class="text-electric-500 text-3xl font-black">◆</span>
+                        <span class="text-2xl font-bold">MFG Base</span>
+                    </div>
+                    <p class="text-slate-400 text-sm">デモアカウントでログイン</p>
+                </div>
+
+                <!-- フォーム -->
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">メールアドレス</label>
+                        <input type="email" value="demo@solvan.jp" readonly
+                            class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-electric-500 transition cursor-not-allowed">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-400 mb-2">パスワード</label>
+                        <input type="password" value="********" readonly
+                            class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-electric-500 transition cursor-not-allowed">
+                    </div>
+                </div>
+
+                <!-- ログインボタン -->
+                <button id="signInBtn" onclick="simulateLogin()"
+                    class="w-full bg-gradient-to-r from-electric-500 to-teal-500 text-white font-bold py-4 rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
+                    <span id="signInText">Sign In</span>
+                    <svg id="signInSpinner" class="animate-spin h-5 w-5 text-white hidden"
+                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
+                        </circle>
+                        <path class="opacity-75" fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                        </path>
+                    </svg>
+                </button>
+
+                <!-- フッターテキスト -->
+                <p class="text-center text-slate-500 text-xs mt-6">
+                    デモ用アカウントが自動入力されています
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- スクロールアニメーション & モーダル制御 -->
     <script>
+        // モーダル制御
+        const mainContent = document.getElementById('mainContent');
+        const loginModal = document.getElementById('loginModal');
+
+        function openLoginModal() {
+            loginModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+            // 背景ブラーを適用
+            document.querySelectorAll('nav, section, footer').forEach(el => {
+                el.classList.add('blur-bg');
+            });
+        }
+
+        function closeLoginModal() {
+            loginModal.classList.remove('active');
+            document.body.style.overflow = '';
+            // 背景ブラーを解除
+            document.querySelectorAll('nav, section, footer').forEach(el => {
+                el.classList.remove('blur-bg');
+            });
+        }
+
+        function simulateLogin() {
+            const signInText = document.getElementById('signInText');
+            const signInSpinner = document.getElementById('signInSpinner');
+            const signInBtn = document.getElementById('signInBtn');
+
+            // ボタンを無効化
+            signInBtn.disabled = true;
+            signInBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+            // テキストをスピナーに切り替え
+            signInText.textContent = '認証中...';
+            signInSpinner.classList.remove('hidden');
+
+            // 1.5秒後にリダイレクト
+            setTimeout(() => {
+                signInText.textContent = '成功！リダイレクト中...';
+                signInSpinner.classList.add('hidden');
+
+                setTimeout(() => {
+                    window.location.href = './app.html';
+                }, 500);
+            }, 1500);
+        }
+
+        // ESCキーでモーダルを閉じる
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && loginModal.classList.contains('active')) {
+                closeLoginModal();
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', function () {
             // AOS初期化
             AOS.init({
