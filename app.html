@@ -456,10 +456,10 @@
             setTimeout(function () { toast.classList.add('translate-y-20'); }, 3000);
         }
 
-        // ===== デモ戦略生成（3パターン分岐） =====
+        // ===== デモ戦略生成（4パターン分岐） =====
         function generateDemoStrategy(notes) {
             // パターンA：撤退推奨（Dランク）
-            if (notes.includes('予算がない') || notes.includes('倒産') || notes.includes('無料') || notes.includes('赤字')) {
+            if (notes.includes('予算がない') || notes.includes('倒産') || notes.includes('無料') || notes.includes('赤字') || notes.includes('無理')) {
                 return '【AI戦略生成結果】\n' +
                     '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
                     '【判定】 ⛔ 撤退推奨 (Dランク)\n\n' +
@@ -475,7 +475,7 @@
             }
 
             // パターンB：様子見・長期戦（Bランク）
-            if (notes.includes('競合') || notes.includes('検討') || notes.includes('上司') || notes.includes('まだ分からない')) {
+            if (notes.includes('競合') || notes.includes('検討') || notes.includes('上司') || notes.includes('まだ分からない') || notes.includes('相見積')) {
                 return '【AI戦略生成結果】\n' +
                     '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
                     '【判定】 ⚠️ 条件付き継続 (Bランク)\n\n' +
@@ -491,20 +491,38 @@
                     '━━━━━━━━━━━━━━━━━━━━━━━━';
             }
 
-            // パターンC：攻め・GOサイン（Sランク）- デフォルト
+            // パターンS：攻め・GOサイン（Sランク）
+            if (notes.includes('困っている') || notes.includes('急ぎ') || notes.includes('助けて') || notes.includes('欲しい') || notes.includes('興味') || notes.includes('契約')) {
+                return '【AI戦略生成結果】\n' +
+                    '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+                    '【判定】 🏆 GOサイン (Sランク)\n\n' +
+                    '【1. 真の課題 (Deep Insight)】 🎯\n' +
+                    '・メモからは「現場の混乱」や「明確なニーズ」が見て取れます。顧客は解決策に飢えています。\n' +
+                    '・「納入後のトラブル対応への不安」が最大のボトルネックです。\n\n' +
+                    '【2. AI戦略 (Strategic Move)】 ⚔️\n' +
+                    '・価格交渉には応じるな。その代わり「24時間の遠隔サポート体制」をオプションで付帯せよ。\n' +
+                    '・これにより、顧客の不安を払拭しつつ、利益率を維持できます。\n\n' +
+                    '【3. 成約確率】 📊\n' +
+                    '・現在：45% → 戦略実行後：82%\n\n' +
+                    '【4. キラーフレーズ】 💬\n' +
+                    '「工場長、値引きよりも『夜中にラインが止まらない安心』を買いませんか？」\n' +
+                    '━━━━━━━━━━━━━━━━━━━━━━━━';
+            }
+
+            // パターンC：分析不能・一般論（Cランク） - デフォルト
             return '【AI戦略生成結果】\n' +
                 '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
-                '【判定】 🏆 GOサイン (Sランク)\n\n' +
-                '【1. 真の課題 (Deep Insight)】 🎯\n' +
-                '・メモからは「現場の混乱」が見て取れます。顧客は解決策に飢えています。\n' +
-                '・「納入後のトラブル対応への不安」が最大のボトルネックです。\n\n' +
-                '【2. AI戦略 (Strategic Move)】 ⚔️\n' +
-                '・価格交渉には応じるな。その代わり「24時間の遠隔サポート体制」をオプションで付帯せよ。\n' +
-                '・これにより、顧客の不安を払拭しつつ、利益率を維持できます。\n\n' +
-                '【3. 成約確率】 📊\n' +
-                '・現在：45% → 戦略実行後：82%\n\n' +
-                '【4. キラーフレーズ】 💬\n' +
-                '「工場長、値引きよりも『夜中にラインが止まらない安心』を買いませんか？」\n' +
+                '【判定】 🔄 分析待ち (Cランク)\n\n' +
+                '【1. 現状分析】 ❓\n' +
+                '・入力された情報からは、決定的な課題（インサイト）や顧客の温度感が抽出できませんでした。\n' +
+                '・一般的な商談としては成立していますが、AIが戦略を立てるには情報不足です。\n\n' +
+                '【2. 追加ヒアリング事項】 👂\n' +
+                '・以下の点をヒアリングし、再度入力してください。\n' +
+                '  1. 具体的な予算感（松・竹・梅のどれか？）\n' +
+                '  2. 導入時期（今すぐか、来期か？）\n' +
+                '  3. 決裁ルート（社長即決か、稟議が必要か？）\n\n' +
+                '【3. AIのアドバイス】\n' +
+                '・まずは「事例集」を見せて、相手の反応（食いつき）を確認することをお勧めします。\n' +
                 '━━━━━━━━━━━━━━━━━━━━━━━━';
         }
 
@@ -538,6 +556,7 @@
                 if (item.rank === 'S') rankColor = 'bg-yellow-500 shadow-[0_0_8px_#eab308]';
                 else if (item.rank === 'B') rankColor = 'bg-blue-400';
                 else if (item.rank === 'D') rankColor = 'bg-red-500';
+                else if (item.rank === 'C') rankColor = 'bg-slate-500';
 
                 var div = document.createElement('div');
                 div.className = 'group bg-slate-800/40 hover:bg-slate-800 border border-slate-800 hover:border-blue-500/30 p-2.5 rounded-lg cursor-pointer transition-all duration-200 relative overflow-hidden mb-2';
@@ -590,8 +609,10 @@
 
             generateBtn.addEventListener('click', function () {
                 var text = rawNotes.value.trim();
-                if (!text) {
-                    showToast('メモを入力してください', 'error');
+
+                // ■ バリデーションチェック (10文字未満は弾く)
+                if (!text || text.length < 10) {
+                    showToast('⚠️ 情報が少なすぎます。もう少し詳しく入力してください（10文字以上）', 'error');
                     rawNotes.focus();
                     return;
                 }
@@ -624,9 +645,10 @@
                 if (!result || result.includes('解析中')) return;
 
                 // ランク判定
-                var rank = 'S';
+                var rank = 'C';
                 if (result.includes('撤退推奨') || result.includes('Dランク')) rank = 'D';
                 else if (result.includes('条件付き継続') || result.includes('Bランク')) rank = 'B';
+                else if (result.includes('GOサイン') || result.includes('Sランク')) rank = 'S';
 
                 // データ作成
                 var newData = {
