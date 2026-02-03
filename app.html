@@ -55,34 +55,62 @@
                 transform: translateY(0);
             }
         }
+
+        /* 音声入力ボタン */
+        .mic-pulse {
+            animation: micPulse 1s infinite;
+        }
+
+        @keyframes micPulse {
+
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+            }
+
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+            }
+        }
     </style>
 </head>
 
-<body class="font-sans bg-slate-50 text-slate-800">
-    <div class="flex h-screen">
+<body class="font-sans bg-slate-50 text-slate-800 overflow-hidden">
+    <div class="flex h-screen relative">
+
+        <!-- オーバーレイ（モバイル用） -->
+        <div id="sidebar-overlay" onclick="toggleSidebar()"
+            class="fixed inset-0 bg-black/50 z-30 hidden md:hidden transition-opacity opacity-0"></div>
 
         <!-- サイドバー -->
-        <div class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-20 flex-shrink-0">
-            <div class="p-6 border-b border-slate-800 bg-slate-950/50">
-                <p class="text-[10px] text-blue-400 tracking-widest uppercase mb-2 font-bold opacity-80">Powered by
-                    SOLVAN</p>
-                <h1 class="font-extrabold text-2xl tracking-tight text-white flex items-center gap-2">
-                    <span class="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">◆</span> MFG Base
-                </h1>
-                <div
-                    class="mt-3 inline-flex items-center bg-blue-950/80 border border-blue-900/50 rounded-full px-3 py-1">
-                    <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse shadow-[0_0_8px_#22c55e]"></span>
-                    <p class="text-[11px] font-semibold text-blue-200 tracking-wider">AI Sales Director</p>
+        <aside id="sidebar"
+            class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-40 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 ease-in-out flex-shrink-0">
+            <div class="p-6 border-b border-slate-800 bg-slate-950/50 flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] text-blue-400 tracking-widest uppercase mb-2 font-bold opacity-80">Powered by
+                        SOLVAN</p>
+                    <h1 class="font-extrabold text-2xl tracking-tight text-white flex items-center gap-2">
+                        <span class="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">◆</span> MFG Base
+                    </h1>
                 </div>
+                <!-- 閉じるボタン（モバイルのみ） -->
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white text-xl">✕</button>
+            </div>
+            <div
+                class="mt-3 mx-6 inline-flex items-center bg-blue-950/80 border border-blue-900/50 rounded-full px-3 py-1 w-fit">
+                <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse shadow-[0_0_8px_#22c55e]"></span>
+                <p class="text-[11px] font-semibold text-blue-200 tracking-wider">AI Sales Director</p>
             </div>
 
             <nav class="p-4 space-y-2">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard"
+                <button onclick="switchTab('dashboard'); toggleSidebarIfMobile()" id="nav-dashboard"
                     class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all bg-blue-600 text-white shadow-lg shadow-blue-900/20">
                     <span class="text-lg mr-3">📊</span>
                     <span class="font-bold text-sm">経営コックピット</span>
                 </button>
-                <button onclick="switchTab('report')" id="nav-report"
+                <button onclick="switchTab('report'); toggleSidebarIfMobile()" id="nav-report"
                     class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
                     <span class="text-lg mr-3">📝</span>
                     <span class="font-bold text-sm">AI戦略日報入力</span>
@@ -116,10 +144,23 @@
                 </button>
                 <p class="text-[10px] text-slate-700 mt-3 pt-2 border-t border-slate-800">© 2026 SOLVAN Inc.</p>
             </div>
-        </div>
+        </aside>
 
         <!-- メインコンテンツ -->
-        <div class="flex-1 overflow-y-auto bg-slate-100 relative">
+        <div class="flex-1 overflow-y-auto bg-slate-100 relative w-full">
+            <!-- モバイルヘッダー -->
+            <div class="md:hidden bg-slate-900 text-white p-4 flex items-center sticky top-0 z-20 shadow-md">
+                <button onclick="toggleSidebar()" class="mr-4 text-slate-300 hover:text-white">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+                <span class="font-bold text-sm tracking-wide flex items-center gap-2">
+                    <span class="text-blue-500">◆</span> MFG Base
+                </span>
+            </div>
+
             <div
                 class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none">
             </div>
@@ -292,15 +333,35 @@
                         <span class="text-xs text-slate-400 font-mono bg-slate-100 px-2 py-1 rounded">Mode: Demo</span>
                     </div>
                     <div class="p-6">
-                        <textarea id="raw-notes"
-                            class="w-full h-40 p-4 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none text-slate-700 bg-slate-50 focus:bg-white"
-                            placeholder="ここに商談の雑多なメモを入力してください...
+                        <div class="relative">
+                            <textarea id="raw-notes"
+                                class="w-full h-40 p-4 pr-14 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none text-slate-700 bg-slate-50 focus:bg-white"
+                                placeholder="ここに商談の雑多なメモを入力してください...
 
 例：
 久留米の〇〇鉄工所。社長と面談。人手不足で納期遅れが起きているらしい。AIでの自動見積もりに興味ありそう。"></textarea>
+
+                            <!-- 音声入力ボタン -->
+                            <button id="voice-btn" type="button"
+                                class="absolute right-3 bottom-3 w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-500 flex items-center justify-center transition cursor-pointer"
+                                title="音声入力">
+                                <svg id="mic-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- 音声入力ステータス -->
+                        <div id="voice-status"
+                            class="hidden mt-2 flex items-center text-sm text-red-500 font-medium animate-pulse">
+                            <span>🔴</span>
+                            <span id="voice-status-text" class="ml-1">音声を聞き取っています...</span>
+                        </div>
+
                         <div class="flex justify-between items-center mt-2 mb-3">
                             <span id="char-count" class="text-xs text-slate-400">0 文字</span>
-                            <span class="text-xs text-slate-400">💡 Ctrl+Enter で送信</span>
+                            <span class="text-xs text-slate-400">💡 Ctrl+Enter で送信 | 🎙️ マイクで音声入力</span>
                         </div>
                         <button id="generate-btn"
                             class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl transition transform active:scale-[0.99] shadow-lg shadow-blue-500/20 flex justify-center items-center text-lg cursor-pointer">
@@ -351,6 +412,31 @@
     </div>
 
     <script>
+        // ===== サイドバー開閉機能（モバイル用） =====
+        window.toggleSidebar = function () {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebar-overlay');
+
+            if (sidebar.classList.contains('-translate-x-full')) {
+                // 開く
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(function () { overlay.classList.remove('opacity-0'); }, 10);
+            } else {
+                // 閉じる
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(function () { overlay.classList.add('hidden'); }, 300);
+            }
+        };
+
+        // メニュークリック時にモバイルならサイドバーを閉じる
+        window.toggleSidebarIfMobile = function () {
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        };
+
         // ===== タブ切り替え =====
         window.switchTab = function (tabName) {
             var dashboard = document.getElementById('view-dashboard');
@@ -462,6 +548,98 @@
                 }, 2000);
                 showToast('保存しました！', 'success');
             });
+
+            // ===== 音声入力 (Web Speech API) =====
+            var voiceBtn = document.getElementById('voice-btn');
+            var voiceStatus = document.getElementById('voice-status');
+            var voiceStatusText = document.getElementById('voice-status-text');
+            var isRecording = false;
+            var recognition = null;
+
+            // Web Speech API対応チェック
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'ja-JP';
+                recognition.interimResults = true;
+                recognition.continuous = true;
+
+                recognition.onstart = function () {
+                    isRecording = true;
+                    voiceBtn.classList.remove('bg-slate-200', 'hover:bg-slate-300', 'text-slate-500');
+                    voiceBtn.classList.add('bg-red-500', 'text-white', 'mic-pulse');
+                    voiceStatus.classList.remove('hidden');
+                    voiceStatusText.textContent = '聞いています...';
+                    console.log('音声認識開始');
+                };
+
+                recognition.onresult = function (event) {
+                    var transcript = '';
+                    for (var i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            transcript += event.results[i][0].transcript;
+                        }
+                    }
+                    if (transcript) {
+                        // 既存テキストに追記（句点付き）
+                        var currentText = rawNotes.value;
+                        rawNotes.value += transcript + '。';
+                        charCount.textContent = rawNotes.value.length + ' 文字';
+                        voiceStatusText.textContent = '認識: ' + transcript.substring(0, 15) + '...';
+                    }
+                };
+
+                recognition.onerror = function (event) {
+                    console.error('音声認識エラー:', event.error);
+                    if (event.error === 'not-allowed') {
+                        showToast('マイクの使用が許可されていません', 'error');
+                    } else if (event.error === 'no-speech') {
+                        voiceStatusText.textContent = '音声が検出されませんでした';
+                    } else {
+                        showToast('音声認識エラー: ' + event.error, 'error');
+                    }
+                    stopRecording();
+                };
+
+                recognition.onend = function () {
+                    if (isRecording) {
+                        // 継続録音モードなら再開
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            stopRecording();
+                        }
+                    }
+                };
+
+                function stopRecording() {
+                    isRecording = false;
+                    recognition.stop();
+                    voiceBtn.classList.add('bg-slate-200', 'hover:bg-slate-300', 'text-slate-500');
+                    voiceBtn.classList.remove('bg-red-500', 'text-white', 'mic-pulse');
+                    voiceStatus.classList.add('hidden');
+                    console.log('音声認識停止');
+                }
+
+                voiceBtn.addEventListener('click', function () {
+                    if (isRecording) {
+                        stopRecording();
+                    } else {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error('音声認識開始エラー:', e);
+                        }
+                    }
+                });
+            } else {
+                // 非対応ブラウザ
+                voiceBtn.addEventListener('click', function () {
+                    showToast('お使いのブラウザは音声入力に対応していません', 'error');
+                });
+                console.warn('Web Speech API not supported');
+            }
         });
     </script>
 </body>
