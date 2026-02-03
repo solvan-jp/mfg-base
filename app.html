@@ -80,11 +80,9 @@
 <body class="font-sans bg-slate-50 text-slate-800 overflow-hidden">
     <div class="flex h-screen relative">
 
-        <!-- オーバーレイ（モバイル用） -->
         <div id="sidebar-overlay" onclick="toggleSidebar()"
             class="fixed inset-0 bg-black/50 z-30 hidden md:hidden transition-opacity opacity-0"></div>
 
-        <!-- サイドバー -->
         <aside id="sidebar"
             class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-40 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 ease-in-out flex-shrink-0">
             <div class="p-6 border-b border-slate-800 bg-slate-950/50 flex justify-between items-center">
@@ -95,7 +93,6 @@
                         <span class="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">◆</span> MFG Base
                     </h1>
                 </div>
-                <!-- 閉じるボタン（モバイルのみ） -->
                 <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white text-xl">✕</button>
             </div>
             <div
@@ -117,19 +114,18 @@
                 </button>
             </nav>
 
-            <!-- ミニ履歴 -->
-            <div class="flex-1 p-4 border-t border-slate-800">
-                <p class="text-[10px] text-slate-500 mb-3 font-bold uppercase tracking-wider">Recent Activity</p>
-                <div id="mini-history" class="space-y-2 text-xs">
-                    <div class="flex items-center text-slate-400 hover:text-white transition cursor-pointer">
-                        <div class="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>久留米精密工業 (A)
-                    </div>
-                    <div class="flex items-center text-slate-400 hover:text-white transition cursor-pointer">
-                        <div class="w-1.5 h-1.5 bg-yellow-500 rounded-full mr-2"></div>博多食品加工 (B)
-                    </div>
-                    <div class="flex items-center text-slate-400 hover:text-white transition cursor-pointer">
-                        <div class="w-1.5 h-1.5 bg-blue-500 rounded-full mr-2"></div>山田精密工業 (A)
-                    </div>
+            <div class="flex-1 overflow-y-auto px-4 py-2 border-t border-slate-800/50 min-h-0">
+                <div
+                    class="flex justify-between items-center mb-3 px-1 sticky top-0 bg-slate-900/95 backdrop-blur py-2 z-10">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">History</p>
+                    <button onclick="clearHistory()"
+                        class="text-[10px] text-slate-500 hover:text-red-400 transition flex items-center gap-1"
+                        title="履歴を削除">
+                        <span>🗑</span> Clear
+                    </button>
+                </div>
+                <div id="history-list" class="space-y-2 pb-4">
+                    <p class="text-xs text-slate-600 text-center py-4 italic">No saved reports.</p>
                 </div>
             </div>
 
@@ -138,7 +134,7 @@
                     class="text-xs text-slate-500 hover:text-blue-400 w-full text-left flex items-center transition mb-2">
                     <span class="mr-2">📤</span> データをエクスポート
                 </button>
-                <button onclick="clearAllData()"
+                <button onclick="clearHistory()"
                     class="text-xs text-slate-500 hover:text-red-400 w-full text-left flex items-center transition">
                     <span class="mr-2">🗑</span> データを全消去
                 </button>
@@ -146,9 +142,7 @@
             </div>
         </aside>
 
-        <!-- メインコンテンツ -->
         <div class="flex-1 overflow-y-auto bg-slate-100 relative w-full">
-            <!-- モバイルヘッダー -->
             <div class="md:hidden bg-slate-900 text-white p-4 flex items-center sticky top-0 z-20 shadow-md">
                 <button onclick="toggleSidebar()" class="mr-4 text-slate-300 hover:text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -165,9 +159,7 @@
                 class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none">
             </div>
 
-            <!-- ===== ダッシュボード ===== -->
             <div id="view-dashboard" class="p-8 max-w-6xl mx-auto space-y-6 animate-fade-in relative z-10">
-                <!-- ヘッダー -->
                 <div class="flex justify-between items-end mb-2">
                     <div>
                         <h2 class="text-2xl font-bold text-slate-800">Executive Dashboard</h2>
@@ -179,9 +171,7 @@
                     </button>
                 </div>
 
-                <!-- KPIカード -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    <!-- 売上予測 -->
                     <div
                         class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
                         <div
@@ -202,7 +192,6 @@
                         </div>
                     </div>
 
-                    <!-- 成約確率 -->
                     <div
                         class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
                         <div
@@ -220,7 +209,6 @@
                         <p class="text-xs text-slate-400 mt-3">MFG Base導入により提案精度が向上中</p>
                     </div>
 
-                    <!-- アラート -->
                     <div
                         class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
                         <div
@@ -238,9 +226,7 @@
                     </div>
                 </div>
 
-                <!-- 下部 2カラム -->
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- 課題分析 -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
                         <h3 class="font-bold text-slate-700 mb-4 flex items-center">
                             <span class="bg-slate-100 p-1.5 rounded mr-2">📉</span>
@@ -278,7 +264,6 @@
                         </div>
                     </div>
 
-                    <!-- 今週の勝負案件 -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="font-bold text-slate-700 mb-4 flex items-center">
                             <span class="bg-slate-100 p-1.5 rounded mr-2">🔥</span>
@@ -322,7 +307,6 @@
                 </div>
             </div>
 
-            <!-- ===== AI戦略日報 ===== -->
             <div id="view-report" class="p-8 max-w-4xl mx-auto hidden animate-fade-in relative z-10">
                 <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
                     <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
@@ -330,7 +314,8 @@
                             <span class="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded mr-3">INPUT</span>
                             <h2 class="text-base font-bold text-slate-800">商談メモを入力</h2>
                         </div>
-                        <span class="text-xs text-slate-400 font-mono bg-slate-100 px-2 py-1 rounded">Mode: Demo</span>
+                        <span class="text-xs text-slate-400 font-mono bg-slate-100 px-2 py-1 rounded">Mode:
+                            Demo</span>
                     </div>
                     <div class="p-6">
                         <div class="relative">
@@ -341,7 +326,6 @@
 例：
 久留米の〇〇鉄工所。社長と面談。人手不足で納期遅れが起きているらしい。AIでの自動見積もりに興味ありそう。"></textarea>
 
-                            <!-- 音声入力ボタン -->
                             <button id="voice-btn" type="button"
                                 class="absolute right-3 bottom-3 w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-500 flex items-center justify-center transition cursor-pointer"
                                 title="音声入力">
@@ -352,7 +336,6 @@
                             </button>
                         </div>
 
-                        <!-- 音声入力ステータス -->
                         <div id="voice-status"
                             class="hidden mt-2 flex items-center text-sm text-red-500 font-medium animate-pulse">
                             <span>🔴</span>
@@ -370,7 +353,6 @@
                     </div>
                 </div>
 
-                <!-- 結果エリア -->
                 <div id="result-area"
                     class="bg-white rounded-2xl shadow-xl border border-blue-100 overflow-hidden hidden ring-4 ring-blue-500/10">
                     <div
@@ -391,7 +373,8 @@
                     </div>
                     <div class="p-8 bg-slate-50">
                         <div id="output"
-                            class="whitespace-pre-wrap text-[15px] leading-relaxed font-mono text-slate-800"></div>
+                            class="whitespace-pre-wrap text-[15px] leading-relaxed font-mono text-slate-800">
+                        </div>
                     </div>
                     <div class="px-6 py-3 bg-slate-100 border-t border-slate-200 flex justify-end">
                         <button id="regenerate-btn"
@@ -405,7 +388,6 @@
         </div>
     </div>
 
-    <!-- Toast -->
     <div id="toast"
         class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-20 bg-slate-900 text-white px-6 py-3 rounded-xl shadow-2xl text-sm font-medium transition-transform duration-300 z-50">
         <span id="toast-message"></span>
@@ -527,10 +509,65 @@
         }
 
         function exportData() { showToast('エクスポート機能 (デモ)', 'success'); }
-        function clearAllData() { if (confirm('データを消去しますか？')) showToast('消去しました', 'success'); }
+
+        // ■ 追加: 履歴クリア機能
+        function clearHistory() {
+            if (confirm('履歴を全て削除しますか？')) {
+                localStorage.removeItem('mfg_base_history');
+                loadHistoryList();
+                showToast('履歴を削除しました', 'success');
+            }
+        }
+        window.clearHistory = clearHistory;
+
+        // ■ 追加: 履歴表示ロジック
+        function loadHistoryList() {
+            var historyList = document.getElementById('history-list');
+            var history = JSON.parse(localStorage.getItem('mfg_base_history') || '[]');
+
+            historyList.innerHTML = '';
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-xs text-slate-600 text-center py-4 italic">No saved reports.</p>';
+                return;
+            }
+
+            history.forEach(function (item) {
+                // ランクごとの色設定
+                var rankColor = 'bg-slate-400';
+                if (item.rank === 'S') rankColor = 'bg-yellow-500 shadow-[0_0_8px_#eab308]';
+                else if (item.rank === 'B') rankColor = 'bg-blue-400';
+                else if (item.rank === 'D') rankColor = 'bg-red-500';
+
+                var div = document.createElement('div');
+                div.className = 'group bg-slate-800/40 hover:bg-slate-800 border border-slate-800 hover:border-blue-500/30 p-2.5 rounded-lg cursor-pointer transition-all duration-200 relative overflow-hidden mb-2';
+                div.innerHTML =
+                    '<div class="flex items-center justify-between mb-1">' +
+                    '<span class="text-[10px] text-slate-400 font-mono">' + item.date + '</span>' +
+                    '<span class="w-2 h-2 rounded-full ' + rankColor + '"></span>' +
+                    '</div>' +
+                    '<p class="text-xs text-slate-300 truncate font-bold group-hover:text-white transition-colors">' + item.title + '</p>';
+
+                div.onclick = function () {
+                    switchTab('report');
+                    toggleSidebarIfMobile();
+                    document.getElementById('raw-notes').value = item.fullText;
+                    document.getElementById('output').innerText = item.result;
+                    document.getElementById('result-area').classList.remove('hidden');
+                    document.getElementById('result-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    showToast('履歴を復元しました', 'success');
+                };
+
+                historyList.appendChild(div);
+            });
+        }
+        window.loadHistoryList = loadHistoryList;
 
         // ===== DOMContentLoaded =====
         document.addEventListener('DOMContentLoaded', function () {
+            // 初期化時に履歴をロード
+            loadHistoryList();
+
             var generateBtn = document.getElementById('generate-btn');
             var saveBtn = document.getElementById('save-btn');
             var copyBtn = document.getElementById('copy-btn');
@@ -582,13 +619,40 @@
             });
 
             saveBtn.addEventListener('click', function () {
+                var text = rawNotes.value;
+                var result = output.innerText;
+                if (!result || result.includes('解析中')) return;
+
+                // ランク判定
+                var rank = 'S';
+                if (result.includes('撤退推奨') || result.includes('Dランク')) rank = 'D';
+                else if (result.includes('条件付き継続') || result.includes('Bランク')) rank = 'B';
+
+                // データ作成
+                var newData = {
+                    id: Date.now(),
+                    date: new Date().toLocaleDateString(),
+                    title: text.slice(0, 15) + (text.length > 15 ? '...' : ''),
+                    fullText: text,
+                    result: result,
+                    rank: rank
+                };
+
+                // 保存
+                var history = JSON.parse(localStorage.getItem('mfg_base_history') || '[]');
+                history.unshift(newData);
+                localStorage.setItem('mfg_base_history', JSON.stringify(history));
+
+                // UI更新
                 saveBtn.innerHTML = '✅ 保存完了！';
                 saveBtn.classList.add('bg-green-600', 'border-green-400');
+                loadHistoryList();
+                showToast('保存しました！', 'success');
+
                 setTimeout(function () {
                     saveBtn.innerHTML = '<span class="mr-2">💾</span> DBに保存';
                     saveBtn.classList.remove('bg-green-600', 'border-green-400');
                 }, 2000);
-                showToast('保存しました！', 'success');
             });
 
             // ===== 音声入力 (Web Speech API) =====
