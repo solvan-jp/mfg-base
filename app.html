@@ -331,9 +331,10 @@
                         </div>
 
                         <!-- 音声入力ステータス -->
-                        <div id="voice-status" class="hidden mt-2 flex items-center text-sm text-red-500 font-medium">
-                            <span class="w-2 h-2 bg-red-500 rounded-full mr-2 animate-pulse"></span>
-                            <span id="voice-status-text">聞いています...</span>
+                        <div id="voice-status"
+                            class="hidden mt-2 flex items-center text-sm text-red-500 font-medium animate-pulse">
+                            <span>🔴</span>
+                            <span id="voice-status-text" class="ml-1">音声を聞き取っています...</span>
                         </div>
 
                         <div class="flex justify-between items-center mt-2 mb-3">
@@ -534,14 +535,11 @@
                         }
                     }
                     if (transcript) {
-                        // 既存テキストに追記
+                        // 既存テキストに追記（句点付き）
                         var currentText = rawNotes.value;
-                        if (currentText && !currentText.endsWith('\n') && !currentText.endsWith(' ')) {
-                            rawNotes.value += ' ';
-                        }
-                        rawNotes.value += transcript;
+                        rawNotes.value += transcript + '。';
                         charCount.textContent = rawNotes.value.length + ' 文字';
-                        voiceStatusText.textContent = '認識中: ' + transcript.substring(0, 20) + '...';
+                        voiceStatusText.textContent = '認識: ' + transcript.substring(0, 15) + '...';
                     }
                 };
 
