@@ -4,589 +4,1429 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="MFG Base - AIで日本の製造業の営業を再発明する。製造業特化型 営業DXプラットフォーム by SOLVAN">
-    <title>MFG Base | AIで日本の製造業の営業を再発明する</title>
+    <meta name="description" content="MFG Base by SOLVAN - AI Sales Director が経営判断をサポート。ダッシュボード＆戦略立案プラットフォーム。">
+    <title>MFG Base | AI Sales Director - SOLVAN</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;600;700;800;900&display=swap"
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
                         sans: ['Noto Sans JP', 'sans-serif'],
-                    },
-                    colors: {
-                        navy: {
-                            950: '#020617',
-                            900: '#0f172a',
-                            800: '#1e293b',
-                        },
-                        electric: {
-                            500: '#3b82f6',
-                            400: '#60a5fa',
-                        },
-                        teal: {
-                            500: '#14b8a6',
-                            400: '#2dd4bf',
-                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        html {
-            scroll-behavior: smooth;
+        ::-webkit-scrollbar {
+            width: 5px;
         }
 
-        /* グリッド背景 */
-        .grid-bg {
-            background-image:
-                linear-gradient(rgba(59, 130, 246, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(59, 130, 246, 0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
+        ::-webkit-scrollbar-track {
+            background: transparent;
         }
 
-        /* 光る粒子エフェクト */
-        .particles {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            pointer-events: none;
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.4);
+            border-radius: 3px;
         }
 
-        .particle {
-            position: absolute;
-            width: 2px;
-            height: 2px;
-            background: rgba(59, 130, 246, 0.6);
-            border-radius: 50%;
-            animation: float 15s infinite ease-in-out;
-            box-shadow: 0 0 10px rgba(59, 130, 246, 0.8);
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.6);
         }
 
-        @keyframes float {
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(5px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 音声入力ボタン */
+        .mic-pulse {
+            animation: micPulse 1s infinite;
+        }
+
+        @keyframes micPulse {
 
             0%,
             100% {
-                transform: translateY(0) translateX(0);
-                opacity: 0;
-            }
-
-            10% {
                 opacity: 1;
+                box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
             }
 
-            90% {
-                opacity: 1;
-            }
-
-            100% {
-                transform: translateY(-100vh) translateX(50px);
-                opacity: 0;
+            50% {
+                opacity: 0.8;
+                box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
             }
         }
 
-        /* グラデーショングロー */
-        .glow-blue {
-            box-shadow: 0 0 60px rgba(59, 130, 246, 0.3);
+        /* シニアモード（文字サイズ大） */
+        body.text-large {
+            font-size: 110%;
         }
 
-        .glow-teal {
-            box-shadow: 0 0 60px rgba(20, 184, 166, 0.3);
+        body.text-large h2 {
+            font-size: 1.75rem;
         }
 
-        /* グラスモーフィズム */
-        .glass {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+        body.text-large p,
+        body.text-large span {
+            line-height: 1.8;
         }
 
-        /* フェードインアニメーション */
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* ヒーローグラデーション */
-        .hero-gradient {
-            background: radial-gradient(ellipse at 50% 0%, rgba(59, 130, 246, 0.15) 0%, transparent 50%),
-                radial-gradient(ellipse at 80% 50%, rgba(20, 184, 166, 0.1) 0%, transparent 40%),
-                linear-gradient(180deg, #020617 0%, #0f172a 100%);
-        }
-
-        /* CTAボタンホバーエフェクト */
-        .cta-btn {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .cta-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-            transition: left 0.5s ease;
-        }
-
-        .cta-btn:hover::before {
-            left: 100%;
-        }
-
-        .cta-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.4);
-        }
-
-        /* カードホバー */
-        .feature-card {
-            transition: all 0.4s ease;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: rgba(59, 130, 246, 0.5);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3), 0 0 40px rgba(59, 130, 246, 0.1);
-        }
-
-        /* テキストグラデーション */
-        .text-gradient {
-            background: linear-gradient(135deg, #60a5fa 0%, #2dd4bf 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        /* モーダル */
-        .modal-overlay {
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.3s ease, visibility 0.3s ease;
-        }
-
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-content {
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.3s ease;
-        }
-
-        .modal-overlay.active .modal-content {
-            transform: scale(1) translateY(0);
-        }
-
-        .blur-bg {
-            filter: blur(8px);
-            transition: filter 0.3s ease;
-        }
-
-        /* スピナー */
-        .spinner {
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-top: 2px solid white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            animation: spin 0.8s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
+        body.text-large textarea {
+            font-size: 1.1rem;
         }
     </style>
 </head>
 
-<body class="font-sans bg-navy-950 text-white antialiased">
+<body
+    class="font-sans bg-slate-50 text-slate-800 overflow-hidden transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100">
+    <div class="flex h-screen relative">
 
-    <!-- 背景エフェクト -->
-    <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
-    <div class="particles z-0">
-        <div class="particle" style="left: 10%; top: 100%; animation-delay: 0s;"></div>
-        <div class="particle" style="left: 20%; top: 100%; animation-delay: 2s;"></div>
-        <div class="particle" style="left: 30%; top: 100%; animation-delay: 4s;"></div>
-        <div class="particle" style="left: 40%; top: 100%; animation-delay: 1s;"></div>
-        <div class="particle" style="left: 50%; top: 100%; animation-delay: 3s;"></div>
-        <div class="particle" style="left: 60%; top: 100%; animation-delay: 5s;"></div>
-        <div class="particle" style="left: 70%; top: 100%; animation-delay: 2.5s;"></div>
-        <div class="particle" style="left: 80%; top: 100%; animation-delay: 4.5s;"></div>
-        <div class="particle" style="left: 90%; top: 100%; animation-delay: 1.5s;"></div>
-    </div>
+        <div id="sidebar-overlay" onclick="toggleSidebar()"
+            class="fixed inset-0 bg-black/50 z-30 hidden md:hidden transition-opacity opacity-0"></div>
 
-    <!-- ナビゲーション -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <span class="text-electric-500 text-2xl font-black">◆</span>
-                <span class="text-xl font-bold tracking-tight">MFG Base</span>
-                <span class="text-[10px] text-slate-500 tracking-widest uppercase ml-2">by SOLVAN</span>
-            </div>
-            <button onclick="location.href='./app/'"
-                class="bg-electric-500/20 hover:bg-electric-500/30 border border-electric-500/50 text-electric-400 px-4 py-2 rounded-lg text-sm font-bold transition cursor-pointer">
-                ログイン
-            </button>
-        </div>
-    </nav>
-
-    <!-- ヒーローセクション -->
-    <section class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
-        <!-- デコレーション -->
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-electric-500/10 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-[100px]"></div>
-
-        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
-            <div class="fade-in">
-                <p class="text-electric-400 text-sm font-bold tracking-widest uppercase mb-6">
-                    Manufacturing × AI Platform
-                </p>
-                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
-                    AIで日本の製造業の<br>
-                    <span class="text-gradient">営業を再発明する</span>
-                </h1>
-                <p class="text-xl sm:text-2xl text-slate-400 font-medium mb-10">
-                    "売れる仕組み"をすべての企業に
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button onclick="location.href='./app/'"
-                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl cursor-pointer">
-                        <span>無料でデモを試す</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                    </button>
-                    <a href="#contact"
-                        class="inline-flex items-center gap-2 border border-slate-600 hover:border-slate-500 hover:bg-slate-800/50 text-white text-lg font-bold px-8 py-5 rounded-xl transition">
-                        <span>お問い合わせ</span>
-                    </a>
+        <aside id="sidebar"
+            class="w-64 bg-slate-900 text-white flex flex-col shadow-2xl z-40 fixed inset-y-0 left-0 transform -translate-x-full md:translate-x-0 md:relative transition-transform duration-300 ease-in-out flex-shrink-0">
+            <div class="p-6 border-b border-slate-800 bg-slate-950/50 flex justify-between items-center">
+                <div>
+                    <p class="text-[10px] text-blue-400 tracking-widest uppercase mb-2 font-bold opacity-80">Powered by
+                        SOLVAN</p>
+                    <h1 class="font-extrabold text-2xl tracking-tight text-white flex items-center gap-2">
+                        <span class="text-blue-500 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">◆</span> MFG Base
+                    </h1>
                 </div>
-                <p class="text-slate-500 text-sm mt-4">クレジットカード不要・即日利用可能</p>
+                <button onclick="toggleSidebar()" class="md:hidden text-slate-400 hover:text-white text-xl">✕</button>
             </div>
-        </div>
-    </section>
-
-    <!-- サービス紹介セクション -->
-    <section class="py-32 relative z-10">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center mb-20 fade-in">
-                <p class="text-teal-400 text-sm font-bold tracking-widest uppercase mb-4">
-                    Sales DX Platform for Manufacturing
-                </p>
-                <h2 class="text-3xl sm:text-4xl md:text-5xl font-black mb-6">
-                    製造業特化型<br class="sm:hidden">営業DXプラットフォーム
-                </h2>
-                <p class="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                    「良いモノを作れば売れる」時代の終わり。<br>
-                    属人化しやすい製造業の営業をAIで科学し、<br>
-                    組織の「売る力」を最大化します。
-                </p>
-            </div>
-
-            <!-- 機能カード -->
-            <div class="grid md:grid-cols-3 gap-8">
-                <!-- カード1 -->
-                <div class="fade-in feature-card glass rounded-2xl p-8 border border-slate-700/50">
-                    <div
-                        class="w-14 h-14 bg-gradient-to-br from-electric-500/20 to-electric-500/5 rounded-xl flex items-center justify-center mb-6 glow-blue">
-                        <span class="text-3xl">🎙️</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">営業日報の自動化</h3>
-                    <p class="text-slate-400 leading-relaxed">
-                        音声入力とAI要約で、移動中に日報が完了。商談直後の鮮度の高い情報を逃しません。
-                    </p>
-                </div>
-
-                <!-- カード2 -->
-                <div class="fade-in feature-card glass rounded-2xl p-8 border border-slate-700/50"
-                    style="transition-delay: 0.1s;">
-                    <div
-                        class="w-14 h-14 bg-gradient-to-br from-teal-500/20 to-teal-500/5 rounded-xl flex items-center justify-center mb-6 glow-teal">
-                        <span class="text-3xl">🧠</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">顧客ニーズの資産化</h3>
-                    <p class="text-slate-400 leading-relaxed">
-                        会話データから「潜在ニーズ」をAIが抽出・分析。属人化した顧客理解を組織の資産に変えます。
-                    </p>
-                </div>
-
-                <!-- カード3 -->
-                <div class="fade-in feature-card glass rounded-2xl p-8 border border-slate-700/50"
-                    style="transition-delay: 0.2s;">
-                    <div class="w-14 h-14 bg-gradient-to-br from-purple-500/20 to-purple-500/5 rounded-xl flex items-center justify-center mb-6"
-                        style="box-shadow: 0 0 60px rgba(168, 85, 247, 0.3);">
-                        <span class="text-3xl">🎯</span>
-                    </div>
-                    <h3 class="text-xl font-bold mb-3">提案の最適化</h3>
-                    <p class="text-slate-400 leading-relaxed">
-                        過去の成功事例に基づき、最適な提案内容をAIがレコメンド。新人でもエースの提案ができます。
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA セクション -->
-    <section class="py-32 relative z-10">
-        <div class="max-w-4xl mx-auto px-6">
             <div
-                class="fade-in glass rounded-3xl p-12 md:p-16 text-center border border-slate-700/50 relative overflow-hidden">
-                <!-- グロー -->
-                <div class="absolute -top-20 -right-20 w-60 h-60 bg-electric-500/20 rounded-full blur-[80px]"></div>
-                <div class="absolute -bottom-20 -left-20 w-60 h-60 bg-teal-500/20 rounded-full blur-[80px]"></div>
+                class="mt-3 mx-6 inline-flex items-center bg-blue-950/80 border border-blue-900/50 rounded-full px-3 py-1 w-fit">
+                <span class="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse shadow-[0_0_8px_#22c55e]"></span>
+                <p class="text-[11px] font-semibold text-blue-200 tracking-wider">AI Sales Director</p>
+            </div>
 
-                <div class="relative z-10">
-                    <h2 class="text-3xl sm:text-4xl font-black mb-6">
-                        製造業の営業を、<br class="sm:hidden">
-                        <span class="text-gradient">次のステージへ</span>
-                    </h2>
-                    <p class="text-slate-400 text-lg mb-10">
-                        今すぐMFG Baseをお試しください。<br>
-                        まずはデモ版で、AIの威力を体感してください。
-                    </p>
-                    <button onclick="location.href='./app/'"
-                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl cursor-pointer">
-                        <span>無料でデモを試す</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
+            <!-- ユーザープロファイル -->
+            <div class="px-6 py-4 flex items-center gap-3 border-b border-slate-800/50">
+                <div
+                    class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-sm font-bold shadow-lg">
+                    山</div>
+                <div>
+                    <p id="sidebar-username" class="text-sm font-bold text-white">山田 太郎</p>
+                    <p id="sidebar-role" class="text-[10px] text-slate-400">営業部長</p>
+                </div>
+            </div>
+
+            <nav class="p-4 space-y-2">
+                <button onclick="switchTab('dashboard'); toggleSidebarIfMobile()" id="nav-dashboard"
+                    class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all bg-blue-600 text-white shadow-lg shadow-blue-900/20">
+                    <span class="text-lg mr-3">📊</span>
+                    <span class="font-bold text-sm">経営コックピット</span>
+                </button>
+                <button onclick="switchTab('report'); toggleSidebarIfMobile()" id="nav-report"
+                    class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <span class="text-lg mr-3">📝</span>
+                    <span class="font-bold text-sm">AI戦略日報入力</span>
+                </button>
+                <button onclick="switchTab('settings'); toggleSidebarIfMobile()" id="nav-settings"
+                    class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <span class="text-lg mr-3">⚙️</span>
+                    <span class="font-bold text-sm">設定・カスタマイズ</span>
+                </button>
+            </nav>
+
+            <div class="flex-1 overflow-y-auto px-4 py-2 border-t border-slate-800/50 min-h-0">
+                <div
+                    class="flex justify-between items-center mb-3 px-1 sticky top-0 bg-slate-900/95 backdrop-blur py-2 z-10">
+                    <p class="text-[10px] text-slate-500 font-bold uppercase tracking-wider">History</p>
+                    <button onclick="clearHistory()"
+                        class="text-[10px] text-slate-500 hover:text-red-400 transition flex items-center gap-1"
+                        title="履歴を削除">
+                        <span>🗑</span> Clear
                     </button>
                 </div>
+                <div id="history-list" class="space-y-2 pb-4">
+                    <p class="text-xs text-slate-600 text-center py-4 italic">No saved reports.</p>
+                </div>
             </div>
-        </div>
-    </section>
 
-    <!-- フッター -->
-    <footer id="contact" class="py-20 border-t border-slate-800 relative z-10">
-        <div class="max-w-6xl mx-auto px-6">
-            <!-- Contact見出し -->
-            <div class="text-center mb-16" data-aos="fade-up">
-                <h2 class="text-2xl font-bold mb-4">Contact Us</h2>
-                <p class="text-slate-400 text-sm mb-6">
-                    製品に関するご質問や、営業DXに関するご相談など、お気軽にお問い合わせください。<br>
-                    原則24時間以内に代表より直接ご返信いたします。
+            <div class="p-4 border-t border-slate-800 bg-slate-950/30 flex-shrink-0">
+                <button onclick="exportData()"
+                    class="text-xs text-slate-500 hover:text-blue-400 w-full text-left flex items-center transition mb-2">
+                    <span class="mr-2">📤</span> データをエクスポート
+                </button>
+                <button onclick="showDemoAlert('ログアウト')"
+                    class="text-xs text-slate-500 hover:text-red-400 w-full text-left flex items-center transition">
+                    <span class="mr-2">🚪</span> ログアウト
+                </button>
+                <p class="text-[10px] text-slate-700 mt-3 pt-2 border-t border-slate-800 text-center">© 2026 SOLVAN Inc.
                 </p>
-                <a href="mailto:info@solvan.jp"
-                    class="text-electric-400 hover:text-electric-300 text-lg font-bold underline decoration-electric-500/30 transition">
-                    info@solvan.jp
-                </a>
             </div>
+        </aside>
 
-            <div class="grid md:grid-cols-2 gap-12 mb-16">
-                <!-- 会社情報 -->
-                <div class="fade-in">
-                    <div class="flex items-center gap-3 mb-6">
-                        <span class="text-electric-500 text-3xl font-black">◆</span>
-                        <span class="text-2xl font-bold tracking-tight">MFG Base</span>
-                    </div>
-                    <p class="text-slate-400 mb-4">株式会社SOLVAN（設立準備中）</p>
-                    <p class="text-slate-500 text-sm mb-2">代表：山名 遼希</p>
-                    <p class="text-slate-500 text-sm mb-2">所在地：福岡県久留米市</p>
-                    <p class="text-slate-500 text-sm">
-                        <a href="mailto:info@solvan.jp" class="hover:text-electric-400 transition">info@solvan.jp</a>
-                    </p>
-                </div>
-
-                <!-- ミッション・バリュー -->
-                <div class="fade-in" style="transition-delay: 0.1s;">
-                    <h3 class="text-lg font-bold mb-4 text-gradient inline-block">Mission</h3>
-                    <p class="text-slate-300 text-lg mb-8">
-                        AIで日本の製造業の営業を再発明する
-                    </p>
-
-                    <h3 class="text-lg font-bold mb-4 text-gradient inline-block">Values</h3>
-                    <div class="flex flex-wrap gap-3">
-                        <span class="glass px-4 py-2 rounded-full text-sm font-medium text-slate-300">Speed</span>
-                        <span class="glass px-4 py-2 rounded-full text-sm font-medium text-slate-300">Clarity</span>
-                        <span class="glass px-4 py-2 rounded-full text-sm font-medium text-slate-300">Ownership</span>
-                        <span
-                            class="glass px-4 py-2 rounded-full text-sm font-medium text-slate-300">Craftsmanship</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- コピーライト -->
-            <div class="text-center pt-8 border-t border-slate-800">
-                <p class="text-slate-600 text-sm">© 2026 SOLVAN Inc. All rights reserved.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- ログインモーダル -->
-    <div id="loginModal" class="modal-overlay fixed inset-0 z-[100] flex items-center justify-center p-4">
-        <!-- 背景オーバーレイ -->
-        <div class="absolute inset-0 bg-navy-950/80 backdrop-blur-sm" onclick="closeLoginModal()"></div>
-
-        <!-- モーダルコンテンツ -->
-        <div class="modal-content relative w-full max-w-md">
-            <div class="glass rounded-2xl p-8 border border-electric-500/30 shadow-2xl"
-                style="box-shadow: 0 0 80px rgba(59, 130, 246, 0.2);">
-                <!-- 閉じるボタン -->
-                <button onclick="closeLoginModal()"
-                    class="absolute top-4 right-4 text-slate-400 hover:text-white transition">
+        <div
+            class="flex-1 overflow-y-auto bg-slate-100 dark:bg-slate-900 relative w-full transition-colors duration-300">
+            <div class="md:hidden bg-slate-900 text-white p-4 flex items-center sticky top-0 z-20 shadow-md">
+                <button onclick="toggleSidebar()" class="mr-4 text-slate-300 hover:text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
-                        </path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16"></path>
                     </svg>
                 </button>
-
-                <!-- ヘッダー -->
-                <div class="text-center mb-8">
-                    <div class="flex items-center justify-center gap-2 mb-4">
-                        <span class="text-electric-500 text-3xl font-black">◆</span>
-                        <span class="text-2xl font-bold">MFG Base</span>
-                    </div>
-                    <p class="text-slate-400 text-sm">デモアカウントでログイン</p>
-                </div>
-
-                <!-- フォーム -->
-                <div class="space-y-4 mb-6">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">メールアドレス</label>
-                        <input type="email" value="demo@solvan.jp" readonly
-                            class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-electric-500 transition cursor-not-allowed">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-400 mb-2">パスワード</label>
-                        <input type="password" value="********" readonly
-                            class="w-full bg-slate-800/50 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-electric-500 transition cursor-not-allowed">
-                    </div>
-                </div>
-
-                <!-- ログインボタン -->
-                <button id="signInBtn" onclick="simulateLogin()"
-                    class="w-full bg-gradient-to-r from-electric-500 to-teal-500 text-white font-bold py-4 rounded-xl hover:opacity-90 transition flex items-center justify-center gap-2">
-                    <span id="signInText">Sign In</span>
-                    <svg id="signInSpinner" class="animate-spin h-5 w-5 text-white hidden"
-                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">
-                        </circle>
-                        <path class="opacity-75" fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
-                        </path>
-                    </svg>
-                </button>
-
-                <!-- フッターテキスト -->
-                <p class="text-center text-slate-500 text-xs mt-6">
-                    デモ用アカウントが自動入力されています
-                </p>
+                <span class="font-bold text-sm tracking-wide flex items-center gap-2">
+                    <span class="text-blue-500">◆</span> MFG Base
+                </span>
             </div>
+
+            <div
+                class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none">
+            </div>
+
+            <div id="view-dashboard" class="p-8 max-w-6xl mx-auto space-y-6 animate-fade-in relative z-10">
+                <div class="flex justify-between items-end mb-2">
+                    <div>
+                        <h2 id="dash-title" class="text-2xl font-bold text-slate-800 dark:text-white">Executive
+                            Dashboard</h2>
+                        <p id="dash-subtitle" class="text-sm text-slate-500 dark:text-slate-400">全社営業状況概況サマリー</p>
+                    </div>
+                    <button
+                        class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition">
+                        🔄 Updated: Just now
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <p id="kpi-1-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    今月の売上着地見込</p>
+                                <p id="kpi-1-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
+                                    ¥12,400,000</p>
+                                <div id="kpi-1-sub"
+                                    class="flex items-center mt-1 text-sm font-bold text-green-600 dark:text-green-400">
+                                    <span>▲ 達成率 85%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- スパークライン（過去6ヶ月推移） -->
+                        <div class="h-16 w-full mt-2">
+                            <canvas id="salesSparkline"></canvas>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
+                        <div
+                            class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-purple-600">
+                            <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
+                            </svg>
+                        </div>
+                        <p id="kpi-2-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">AI 成約確率
+                            (平均)</p>
+                        <p id="kpi-2-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">64.2%
+                        </p>
+                        <div id="kpi-2-sub"
+                            class="flex items-center mt-2 text-sm font-bold text-blue-600 dark:text-blue-400">
+                            <span>先月比 +12pt ↑</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-3">MFG Base導入により提案精度が向上中</p>
+                    </div>
+
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
+                        <div
+                            class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-red-600">
+                            <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
+                            </svg>
+                        </div>
+                        <p id="kpi-3-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">アラート案件</p>
+                        <p id="kpi-3-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">3件</p>
+                        <div id="kpi-3-sub" class="flex items-center mt-2 text-sm font-bold text-red-500">
+                            <span>⚠️ 要注意</span>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-3">競合との価格乖離・担当者変更など</p>
+                    </div>
+                </div>
+
+                <!-- Admin Section (Executive Dashboard) -->
+                <div id="admin-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- 失注・難航理由のAI分析 -->
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 lg:col-span-2">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-indigo-100 dark:bg-indigo-900/50 p-1.5 rounded mr-2">📉</span>
+                            失注・難航理由のAI分析
+                        </h3>
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-6 h-64">
+                            <div class="h-full w-full md:w-1/2 relative flex-shrink-0">
+                                <canvas id="lostReasonsChart"></canvas>
+                            </div>
+                            <div class="text-sm space-y-3 w-full md:w-1/2">
+                                <div
+                                    class="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-800">
+                                    <p class="font-bold text-indigo-600 dark:text-indigo-400 text-sm">📌 45% 技術継承不安</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">→ 動画マニュアル機能を提案せよ</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
+                                    <p class="font-bold text-blue-600 dark:text-blue-400 text-sm">💰 30% 価格競争</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">→ 競合比較シートを用意</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                    <p class="font-bold text-slate-600 dark:text-slate-300 text-sm">📋 25% その他</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">→ 納期・仕様確認</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 売上推移 折れ線グラフ -->
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-slate-100 dark:bg-slate-700 p-1.5 rounded mr-2">📈</span>
+                            売上推移（6ヶ月）
+                        </h3>
+                        <div class="relative h-52">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- 今週の勝負案件 (Admin & Member共通コンポーネントとして利用も可能だが今回はAdmin専用に配置) -->
+                    <div class="lg:col-span-3 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div
+                            class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                            <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                                <span class="bg-slate-100 dark:bg-slate-700 p-1.5 rounded mr-2">🔥</span>
+                                今週の勝負案件
+                            </h3>
+                            <div class="space-y-3">
+                                <div
+                                    class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800 hover:border-blue-300 transition cursor-pointer">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded">Rank
+                                            S</span>
+                                        <span class="text-xs text-slate-400">明日訪問</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">久留米精密工業</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: コストではなく品質で勝負</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-100 dark:border-amber-800 hover:border-amber-300 transition cursor-pointer">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 rounded">Rank
+                                            A</span>
+                                        <span class="text-xs text-slate-400">水曜連絡</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">山田精密工業</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: 競合対策シート持参</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600 hover:border-slate-300 transition cursor-pointer opacity-70">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-slate-600 px-1.5 py-0.5 rounded">Rank
+                                            B</span>
+                                        <span class="text-xs text-slate-400">木曜連絡</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">博多食品加工</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: 技術継承のデータ化提案</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Member Section (Sales Member) -->
+                <div id="member-section" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-green-100 dark:bg-green-900/50 p-1.5 rounded mr-2">✅</span>
+                            今日のToDo (Member)
+                        </h3>
+                        <ul class="space-y-3">
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">14:00 久留米精密 訪問</span>
+                            </li>
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">16:00 博多食品
+                                    見積送付</span>
+                            </li>
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">日報入力 (MFG
+                                    Base)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-blue-100 dark:bg-blue-900/50 p-1.5 rounded mr-2">📊</span>
+                            個人ノルマ達成状況
+                        </h3>
+                        <div class="relative pt-1">
+                            <div class="flex mb-2 items-center justify-between">
+                                <div><span
+                                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">進行中</span>
+                                </div>
+                                <div class="text-right"><span
+                                        class="text-xs font-semibold inline-block text-blue-600">70%</span></div>
+                            </div>
+                            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                                <div style="width:70%"
+                                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500">
+                                </div>
+                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">今月の目標まであと ¥600,000</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="view-report" class="p-8 max-w-4xl mx-auto hidden animate-fade-in relative z-10">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mb-8">
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded mr-3">INPUT</span>
+                            <h2 class="text-base font-bold text-slate-800 dark:text-white">商談メモを入力</h2>
+                        </div>
+                        <span
+                            class="text-xs text-slate-400 font-mono bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">Mode:
+                            Demo</span>
+                    </div>
+                    <div class="p-6">
+                        <div class="relative">
+                            <textarea id="raw-notes"
+                                class="w-full h-40 p-4 pr-14 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
+                                placeholder="ここに商談の雑多なメモを入力してください...
+
+例：
+久留米の〇〇鉄工所。社長と面談。人手不足で納期遅れが起きているらしい。AIでの自動見積もりに興味ありそう。"></textarea>
+
+                            <button id="voice-btn" type="button"
+                                class="absolute right-3 bottom-3 w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 text-slate-500 dark:text-slate-300 flex items-center justify-center transition cursor-pointer"
+                                title="音声入力">
+                                <svg id="mic-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                                    <path
+                                        d="M12 14c1.66 0 3-1.34 3-3V5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm-1-9c0-.55.45-1 1-1s1 .45 1 1v6c0 .55-.45 1-1 1s-1-.45-1-1V5zm6 6c0 2.76-2.24 5-5 5s-5-2.24-5-5H5c0 3.53 2.61 6.43 6 6.92V21h2v-3.08c3.39-.49 6-3.39 6-6.92h-2z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <div id="voice-status"
+                            class="hidden mt-2 flex items-center text-sm text-red-500 font-medium animate-pulse">
+                            <span>🔴</span>
+                            <span id="voice-status-text" class="ml-1">音声を聞き取っています...</span>
+                        </div>
+
+                        <div class="flex justify-between items-center mt-2 mb-3">
+                            <span id="char-count" class="text-xs text-slate-400">0 文字</span>
+                            <span class="text-xs text-slate-400">💡 Ctrl+Enter で送信 | 🎙️ マイクで音声入力</span>
+                        </div>
+                        <button id="generate-btn"
+                            class="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-bold py-4 px-6 rounded-xl transition transform active:scale-[0.99] shadow-lg shadow-blue-500/20 flex justify-center items-center text-lg cursor-pointer">
+                            <span class="mr-2">⚡</span> AI Sales Director に戦略を立案させる
+                        </button>
+                    </div>
+                </div>
+
+                <div id="result-area"
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-blue-100 dark:border-slate-700 overflow-hidden hidden ring-4 ring-blue-500/10">
+                    <div
+                        class="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4 flex justify-between items-center">
+                        <h2 class="text-base font-bold text-white flex items-center">
+                            <span class="text-green-400 mr-2">◆</span> STRATEGIC REPORT
+                        </h2>
+                        <div class="flex gap-2">
+                            <button id="copy-btn"
+                                class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-medium transition flex items-center cursor-pointer">
+                                📋 コピー
+                            </button>
+                            <button id="pdf-btn"
+                                class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center cursor-pointer">
+                                <span class="mr-1">📄</span> PDF出力
+                            </button>
+                            <button id="save-btn"
+                                class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md flex items-center border border-blue-400/50 transition active:scale-95 cursor-pointer">
+                                <span class="mr-2">💾</span> DBに保存
+                            </button>
+                        </div>
+                    </div>
+                    <div id="pdf-content" class="p-8 bg-slate-50 dark:bg-slate-800/50">
+                        <div id="output"
+                            class="whitespace-pre-wrap text-[15px] leading-relaxed font-mono text-slate-800 dark:text-slate-200">
+                        </div>
+                    </div>
+                    <div
+                        class="px-6 py-3 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex justify-end">
+                        <button id="regenerate-btn"
+                            class="text-xs text-slate-500 hover:text-blue-600 transition flex items-center gap-1 cursor-pointer">
+                            🔄 再生成する
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 設定画面 -->
+            <div id="view-settings" class="p-8 max-w-3xl mx-auto hidden animate-fade-in relative z-10">
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6">⚙️ 設定・カスタマイズ</h2>
+
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 mb-6">
+                    <h3 class="font-bold text-lg text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                        <span
+                            class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 p-1.5 rounded mr-2 text-sm">👁️</span>
+                        表示設定 (アクセシビリティ)
+                    </h3>
+
+                    <div class="space-y-6">
+                        <!-- 権限選択 (RBAC) -->
+                        <div>
+                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">ユーザー権限 (RBAC)</p>
+                            <div class="flex gap-4">
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="userRole" value="admin" class="mr-3 accent-blue-600"
+                                        checked onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">👑 管理者
+                                            (Administrator)</span>
+                                        <span class="text-xs text-slate-400">全社データ閲覧可</span>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="userRole" value="member" class="mr-3 accent-blue-600"
+                                        onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">🏃 現場メンバー
+                                            (Member)</span>
+                                        <span class="text-xs text-slate-400">個人データのみ</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">文字サイズ</p>
+                            <div class="flex gap-4">
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="textSize" value="normal" class="mr-3 accent-blue-600"
+                                        checked onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">標準</span>
+                                        <span class="text-xs text-slate-400">デフォルトのサイズ</span>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="textSize" value="large" class="mr-3 accent-blue-600"
+                                        onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-lg text-slate-700 dark:text-slate-200">大
+                                            (シニア)</span>
+                                        <span class="text-xs text-slate-400">文字を大きく表示</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">画面テーマ</p>
+                            <div class="flex gap-4">
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="themeMode" value="light" class="mr-3 accent-blue-600"
+                                        checked onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">☀️
+                                            ライトモード</span>
+                                        <span class="text-xs text-slate-400">明るいオフィス向け</span>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="themeMode" value="dark" class="mr-3 accent-blue-600"
+                                        onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">🌙
+                                            ダークモード</span>
+                                        <span class="text-xs text-slate-400">目に優しい・夜間向け</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                    <h3 class="font-bold text-lg text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                        <span
+                            class="bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 p-1.5 rounded mr-2 text-sm">👤</span>
+                        ユーザー情報
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">お名前</label>
+                            <input type="text" id="setting-username" value="山田 太郎"
+                                class="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
+                                oninput="updateProfile()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">役職</label>
+                            <input type="text" id="setting-role" value="営業部長"
+                                class="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
+                                oninput="updateProfile()">
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3">※ 変更は自動的に保存されます</p>
+                </div>
+            </div>
+
         </div>
     </div>
 
-    <!-- スクロールアニメーション & モーダル制御 -->
+    <div id="toast"
+        class="fixed bottom-6 left-1/2 -translate-x-1/2 translate-y-20 bg-slate-900 text-white px-6 py-3 rounded-xl shadow-2xl text-sm font-medium transition-transform duration-300 z-50">
+        <span id="toast-message"></span>
+    </div>
+
     <script>
-        // モーダル制御
-        const mainContent = document.getElementById('mainContent');
-        const loginModal = document.getElementById('loginModal');
+        // ===== サイドバー開閉機能（モバイル用） =====
+        window.toggleSidebar = function () {
+            var sidebar = document.getElementById('sidebar');
+            var overlay = document.getElementById('sidebar-overlay');
 
-        function openLoginModal() {
-            loginModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            // 背景ブラーを適用
-            document.querySelectorAll('nav, section, footer').forEach(el => {
-                el.classList.add('blur-bg');
-            });
-        }
-
-        function closeLoginModal() {
-            loginModal.classList.remove('active');
-            document.body.style.overflow = '';
-            // 背景ブラーを解除
-            document.querySelectorAll('nav, section, footer').forEach(el => {
-                el.classList.remove('blur-bg');
-            });
-        }
-
-        function simulateLogin() {
-            const signInText = document.getElementById('signInText');
-            const signInSpinner = document.getElementById('signInSpinner');
-            const signInBtn = document.getElementById('signInBtn');
-
-            // ボタンを無効化
-            signInBtn.disabled = true;
-            signInBtn.classList.add('opacity-70', 'cursor-not-allowed');
-
-            // テキストをスピナーに切り替え
-            signInText.textContent = '認証中...';
-            signInSpinner.classList.remove('hidden');
-
-            // 1.5秒後にリダイレクト
-            setTimeout(() => {
-                signInText.textContent = '成功！リダイレクト中...';
-                signInSpinner.classList.add('hidden');
-
-                setTimeout(() => {
-                    window.location.href = './app.html';
-                }, 500);
-            }, 1500);
-        }
-
-        // ESCキーでモーダルを閉じる
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && loginModal.classList.contains('active')) {
-                closeLoginModal();
+            if (sidebar.classList.contains('-translate-x-full')) {
+                // 開く
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+                setTimeout(function () { overlay.classList.remove('opacity-0'); }, 10);
+            } else {
+                // 閉じる
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('opacity-0');
+                setTimeout(function () { overlay.classList.add('hidden'); }, 300);
             }
-        });
+        };
 
-        document.addEventListener('DOMContentLoaded', function () {
-            // AOS初期化
-            AOS.init({
-                duration: 800,
-                once: true,
-            });
+        // メニュークリック時にモバイルならサイドバーを閉じる
+        window.toggleSidebarIfMobile = function () {
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        };
 
-            // フェードインアニメーション（カスタム）
-            const fadeElements = document.querySelectorAll('.fade-in');
-
-            const observer = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add('visible');
+        // ===== タブ切り替え =====
+        window.switchTab = function (tabName) {
+            var views = ['dashboard', 'report', 'settings'];
+            views.forEach(function (v) {
+                var view = document.getElementById('view-' + v);
+                var nav = document.getElementById('nav-' + v);
+                if (v === tabName) {
+                    if (view) view.classList.remove('hidden');
+                    if (nav) {
+                        nav.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
+                        nav.classList.remove('text-slate-400', 'hover:bg-slate-800');
                     }
-                });
-            }, {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            });
-
-            fadeElements.forEach(el => observer.observe(el));
-
-            // ナビバーのスクロール効果
-            const nav = document.querySelector('nav');
-            window.addEventListener('scroll', () => {
-                if (window.scrollY > 50) {
-                    nav.classList.add('shadow-2xl');
                 } else {
-                    nav.classList.remove('shadow-2xl');
+                    if (view) view.classList.add('hidden');
+                    if (nav) {
+                        nav.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
+                        nav.classList.add('text-slate-400', 'hover:bg-slate-800');
+                    }
                 }
             });
+        };
+
+        // ===== Toast =====
+        function showToast(message, type) {
+            var toast = document.getElementById('toast');
+            var toastMessage = document.getElementById('toast-message');
+            toastMessage.textContent = message;
+            toast.className = 'fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-xl shadow-2xl text-sm font-medium transition-transform duration-300 z-50';
+            if (type === 'success') toast.classList.add('bg-green-600', 'text-white');
+            else if (type === 'error') toast.classList.add('bg-red-600', 'text-white');
+            else toast.classList.add('bg-slate-900', 'text-white');
+            toast.classList.remove('translate-y-20');
+            setTimeout(function () { toast.classList.add('translate-y-20'); }, 3000);
+        }
+
+        // ===== グローバル変数 =====
+        let mainChart = null;
+
+        // ===== 設定管理 =====
+        window.updateSettings = function () {
+            // 文字サイズ
+            var sizeRadio = document.querySelector('input[name="textSize"]:checked');
+            var size = sizeRadio ? sizeRadio.value : 'normal';
+            if (size === 'large') {
+                document.body.classList.add('text-large');
+            } else {
+                document.body.classList.remove('text-large');
+            }
+
+            // テーマ (Tailwind Dark Mode)
+            var themeRadio = document.querySelector('input[name="themeMode"]:checked');
+            var theme = themeRadio ? themeRadio.value : 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            // 権限 (RBAC)
+            var roleRadio = document.querySelector('input[name="userRole"]:checked');
+            var role = roleRadio ? roleRadio.value : 'admin';
+
+            // 直前の設定と比較して、権限が変わった場合のみアラートを出す
+            var prevSettings = JSON.parse(localStorage.getItem('mfg_base_settings') || '{}');
+            var prevRole = prevSettings.role || 'admin';
+            var roleChanged = (role !== prevRole);
+
+            applyRole(role, roleChanged);
+
+            // 保存
+            var settings = { size: size, theme: theme, role: role };
+            localStorage.setItem('mfg_base_settings', JSON.stringify(settings));
+        };
+
+        // 権限による表示切り替え
+        function applyRole(role, showAlert) {
+            if (showAlert === undefined) showAlert = false; // デフォルト非表示
+            const adminSec = document.getElementById('admin-section');
+            const memberSec = document.getElementById('member-section');
+            const sidebarRole = document.getElementById('sidebar-role');
+            const dashTitle = document.getElementById('dash-title');
+            const dashSub = document.getElementById('dash-subtitle');
+
+            // KPI要素
+            const k1l = document.getElementById('kpi-1-label'), k1v = document.getElementById('kpi-1-value'), k1s = document.getElementById('kpi-1-sub');
+            const k2l = document.getElementById('kpi-2-label'), k2v = document.getElementById('kpi-2-value'), k2s = document.getElementById('kpi-2-sub');
+            const k3l = document.getElementById('kpi-3-label'), k3v = document.getElementById('kpi-3-value'), k3s = document.getElementById('kpi-3-sub');
+
+            if (role === 'admin') {
+                // Admin Mode
+                if (adminSec) adminSec.classList.remove('hidden');
+                if (memberSec) memberSec.classList.add('hidden');
+                if (sidebarRole) sidebarRole.textContent = 'Administrator';
+                if (dashTitle) dashTitle.textContent = 'Executive Dashboard';
+                if (dashSub) dashSub.textContent = '全社営業状況概況サマリー';
+
+                if (k1l) k1l.textContent = '今月の売上着地見込';
+                if (k1v) k1v.textContent = '¥12,400,000';
+                if (k1s) {
+                    k1s.innerHTML = '<span>▲ 達成率 85%</span>';
+                    k1s.className = 'flex items-center mt-1 text-sm font-bold text-green-600 dark:text-green-400';
+                }
+
+                if (k2l) k2l.textContent = 'AI 成約確率 (平均)';
+                if (k2v) k2v.textContent = '64.2%';
+                if (k2s) {
+                    k2s.innerHTML = '<span>先月比 +12pt ↑</span>';
+                    k2s.className = 'flex items-center mt-2 text-sm font-bold text-blue-600 dark:text-blue-400';
+                }
+
+                if (k3l) k3l.textContent = 'アラート案件';
+                if (k3v) k3v.textContent = '3件';
+                if (k3s) {
+                    k3s.innerHTML = '<span>⚠️ 要注意</span>';
+                    k3s.className = 'flex items-center mt-2 text-sm font-bold text-red-500';
+                }
+
+                renderChart([8.5, 9.2, 8.8, 10.5, 11.2, 12.4]); // 全社データ（ダミー）
+                if (showAlert) showToast('管理者モードに切り替えました', 'success');
+
+            } else {
+                // Member Mode
+                if (adminSec) adminSec.classList.add('hidden');
+                if (memberSec) memberSec.classList.remove('hidden');
+                if (sidebarRole) sidebarRole.textContent = 'Sales Member';
+                if (dashTitle) dashTitle.textContent = 'My Performance';
+                if (dashSub) dashSub.textContent = '個人の活動状況と目標';
+
+                if (k1l) k1l.textContent = '個人売上 (達成率)';
+                if (k1v) k1v.textContent = '¥1,400,000 (70%)';
+                if (k1s) {
+                    k1s.innerHTML = '<span>あと ¥600k で目標</span>';
+                    k1s.className = 'flex items-center mt-1 text-sm font-bold text-slate-500 dark:text-slate-400';
+                }
+
+                if (k2l) k2l.textContent = '今月の訪問予定';
+                if (k2v) k2v.textContent = '12件';
+                if (k2s) {
+                    k2s.innerHTML = '<span>完了: 4件 / 残り: 8件</span>';
+                    k2s.className = 'flex items-center mt-2 text-sm font-bold text-slate-500 dark:text-slate-400';
+                }
+
+                if (k3l) k3l.textContent = '提案中案件';
+                if (k3v) k3v.textContent = '5件';
+                if (k3s) {
+                    k3s.innerHTML = '<span>Sランク: 1件 / Aランク: 2件</span>';
+                    k3s.className = 'flex items-center mt-2 text-sm font-bold text-blue-500';
+                }
+
+                renderChart([1.0, 1.2, 1.1, 1.5, 1.3, 1.4]); // 個人データ（ダミー）
+                if (showAlert) showToast('メンバーモードに切り替えました', 'success');
+            }
+        }
+
+        // メインチャート描画更新
+        function renderChart(data) {
+            const ctx = document.getElementById('salesSparkline');
+            // ※以前のコードで salesSparkline というIDで初期化されていたのでそれを使う
+            // もしIDが違う場合は適宜修正が必要だが、既存コードではinitChartsでnew Chartしている
+            // ここでは既存のチャートインスタンスがあれば破棄して再描画する戦略をとる必要があるが
+            // initChartsで作成されたインスタンスを変数保持していないため、canvasを再取得して作り直す
+
+            // 既存のチャートがあれば破壊するためのグローバル管理が必要だが、
+            // 簡易的に chart.js の getChart を使うか、canvasを再生成する
+
+            const chartStatus = Chart.getChart("salesSparkline"); // <canvas> id
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }
+
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['9月', '10月', '11月', '12月', '1月', '2月'],
+                        datasets: [{
+                            data: data,
+                            borderColor: '#2563eb',
+                            backgroundColor: function (context) {
+                                var ctx = context.chart.ctx;
+                                var gradient = ctx.createLinearGradient(0, 0, 0, 60);
+                                gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+                                gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+                                return gradient;
+                            },
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                        scales: { x: { display: false }, y: { display: false, min: 0 } }, // min:0に変更
+                        animation: { duration: 1000 }
+                    }
+                });
+            }
+        }
+
+        window.updateProfile = function () {
+            var nameInput = document.getElementById('setting-username');
+            var roleInput = document.getElementById('setting-role');
+            var name = nameInput ? nameInput.value : '山田 太郎';
+            var role = roleInput ? roleInput.value : '営業部長';
+
+            var sidebarName = document.getElementById('sidebar-username');
+            var sidebarRole = document.getElementById('sidebar-role');
+            if (sidebarName) sidebarName.textContent = name;
+
+            // 管理者の場合のみ役職名を表示反映（メンバーの場合は固定）
+            var roleRadio = document.querySelector('input[name="userRole"]:checked');
+            if (roleRadio && roleRadio.value === 'admin' && sidebarRole) {
+                sidebarRole.textContent = role;
+            }
+
+            localStorage.setItem('mfg_base_profile', JSON.stringify({ name: name, role: role }));
+        };
+
+        function loadSettings() {
+            // 設定ロード
+            try {
+                var savedSettings = localStorage.getItem('mfg_base_settings');
+                var s = savedSettings ? JSON.parse(savedSettings) : { size: 'normal', theme: 'light', role: 'admin' };
+
+                var sizeRadio = document.querySelector('input[name="textSize"][value="' + s.size + '"]');
+                if (sizeRadio) sizeRadio.checked = true;
+
+                var themeRadio = document.querySelector('input[name="themeMode"][value="' + s.theme + '"]');
+                if (themeRadio) themeRadio.checked = true;
+
+                // 権限ロード
+                var roleRadio = document.querySelector('input[name="userRole"][value="' + (s.role || 'admin') + '"]');
+                if (roleRadio) roleRadio.checked = true;
+
+                // 設定適用
+                if (s.size === 'large') document.body.classList.add('text-large');
+                if (s.theme === 'dark') document.documentElement.classList.add('dark');
+
+                // 権限適用 (初回ロード時はトースト出さないようにフラグ管理したいが、簡易的にそのまま呼ぶ)
+                // ただしapplyRole内でトーストを出しているので、初回ロード時は出したくない場合はロジック調整が必要
+                // ここではシンプルに呼び出す
+                applyRole(s.role || 'admin');
+
+            } catch (e) {
+                console.log('Settings load error:', e);
+            }
+
+            // プロフィールロード
+            try {
+                var savedProfile = localStorage.getItem('mfg_base_profile');
+                var p = savedProfile ? JSON.parse(savedProfile) : { name: '山田 太郎', role: '営業部長' };
+
+                var usernameInput = document.getElementById('setting-username');
+                var roleInput = document.getElementById('setting-role');
+                if (usernameInput) usernameInput.value = p.name;
+                if (roleInput) roleInput.value = p.role || '営業部長';
+
+                var sidebarName = document.getElementById('sidebar-username');
+                var sidebarRole = document.getElementById('sidebar-role');
+                if (sidebarName) sidebarName.textContent = p.name;
+
+                // roleの反映はapplyRoleに任せるが、adminの場合はここでも反映可
+                // ただしapplyRoleが後で呼ばれるので、基本的にはそちらで上書きされる
+                // ここではinputの初期値設定が主目的
+            } catch (e) {
+                console.log('Profile load error:', e);
+            }
+        }
+
+
+
+        // ===== デモ戦略生成（4パターン分岐） =====
+        function generateDemoStrategy(notes) {
+            // パターンA：撤退推奨（Dランク）
+            if (notes.includes('予算がない') || notes.includes('倒産') || notes.includes('無料') || notes.includes('赤字') || notes.includes('無理')) {
+                return '【AI戦略生成結果】\n' +
+                    '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+                    '【判定】 ⛔ 撤退推奨 (Dランク)\n\n' +
+                    '【1. リスク分析】 ⚠️\n' +
+                    '・入力データから「支払い能力への懸念」または「収益性の欠如」が強く検出されました。\n' +
+                    '・この案件に関わると、工数ばかりかかり利益が出ない「赤字プロジェクト」になる確率が 85% です。\n\n' +
+                    '【2. AIの指示】 🛑\n' +
+                    '・即座に撤退してください。\n' +
+                    '・「今回はご期待に添えません」と丁重かつ迅速にお断りし、その時間を優良顧客（久留米精密など）に充ててください。\n\n' +
+                    '【3. 断り文句】 💬\n' +
+                    '「社内で検討いたしまして、現状のリソースではご希望の納期・予算での品質保証が難しいという結論に至りました。」\n' +
+                    '━━━━━━━━━━━━━━━━━━━━━━━━';
+            }
+
+            // パターンB：様子見・長期戦（Bランク）
+            if (notes.includes('競合') || notes.includes('検討') || notes.includes('上司') || notes.includes('まだ分からない') || notes.includes('相見積')) {
+                return '【AI戦略生成結果】\n' +
+                    '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+                    '【判定】 ⚠️ 条件付き継続 (Bランク)\n\n' +
+                    '【1. 現状分析】 🔍\n' +
+                    '・競合他社の存在、または「決裁権者」との握りが弱い状態です。\n' +
+                    '・今すぐクロージングをかけると、価格競争に巻き込まれて失注します。\n\n' +
+                    '【2. AI戦略 (Strategic Move)】 🛡\n' +
+                    '・今は攻める時ではありません。「情報を抜く」ことに徹してください。\n' +
+                    '・特に「競合の提示価格」と「社長が最終的に何を重視するか」の2点だけを聞き出し、一度持ち帰ってください。\n\n' +
+                    '【3. 次のアクション】 📅\n' +
+                    '・無理にアポを取らず、2週間後に「業界の最新事例レポート」を送って様子を見てください。\n' +
+                    '・成約確率は現状 40% です。\n' +
+                    '━━━━━━━━━━━━━━━━━━━━━━━━';
+            }
+
+            // パターンS：攻め・GOサイン（Sランク）
+            if (notes.includes('困っている') || notes.includes('急ぎ') || notes.includes('助けて') || notes.includes('欲しい') || notes.includes('興味') || notes.includes('契約')) {
+                return '【AI戦略生成結果】\n' +
+                    '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+                    '【判定】 🏆 GOサイン (Sランク)\n\n' +
+                    '【1. 真の課題 (Deep Insight)】 🎯\n' +
+                    '・メモからは「現場の混乱」や「明確なニーズ」が見て取れます。顧客は解決策に飢えています。\n' +
+                    '・「納入後のトラブル対応への不安」が最大のボトルネックです。\n\n' +
+                    '【2. AI戦略 (Strategic Move)】 ⚔️\n' +
+                    '・価格交渉には応じるな。その代わり「24時間の遠隔サポート体制」をオプションで付帯せよ。\n' +
+                    '・これにより、顧客の不安を払拭しつつ、利益率を維持できます。\n\n' +
+                    '【3. 成約確率】 📊\n' +
+                    '・現在：45% → 戦略実行後：82%\n\n' +
+                    '【4. キラーフレーズ】 💬\n' +
+                    '「工場長、値引きよりも『夜中にラインが止まらない安心』を買いませんか？」\n' +
+                    '━━━━━━━━━━━━━━━━━━━━━━━━';
+            }
+
+            // パターンC：分析不能・一般論（Cランク） - デフォルト
+            return '【AI戦略生成結果】\n' +
+                '━━━━━━━━━━━━━━━━━━━━━━━━\n' +
+                '【判定】 🔄 分析待ち (Cランク)\n\n' +
+                '【1. 現状分析】 ❓\n' +
+                '・入力された情報からは、決定的な課題（インサイト）や顧客の温度感が抽出できませんでした。\n' +
+                '・一般的な商談としては成立していますが、AIが戦略を立てるには情報不足です。\n\n' +
+                '【2. 追加ヒアリング事項】 👂\n' +
+                '・以下の点をヒアリングし、再度入力してください。\n' +
+                '  1. 具体的な予算感（松・竹・梅のどれか？）\n' +
+                '  2. 導入時期（今すぐか、来期か？）\n' +
+                '  3. 決裁ルート（社長即決か、稟議が必要か？）\n\n' +
+                '【3. AIのアドバイス】\n' +
+                '・まずは「事例集」を見せて、相手の反応（食いつき）を確認することをお勧めします。\n' +
+                '━━━━━━━━━━━━━━━━━━━━━━━━';
+        }
+
+        function exportData() {
+            showToast('⚠️ デモモードではエクスポート機能はご利用いただけません', 'error');
+        }
+
+        function showDemoAlert(featureName) {
+            showToast('⚠️ ' + featureName + ' はデモモードではご利用いただけません', 'error');
+        }
+        window.showDemoAlert = showDemoAlert;
+
+        // ■ 追加: 履歴クリア機能
+        function clearHistory() {
+            if (confirm('履歴を全て削除しますか？')) {
+                localStorage.removeItem('mfg_base_history');
+                loadHistoryList();
+                showToast('履歴を削除しました', 'success');
+            }
+        }
+        window.clearHistory = clearHistory;
+
+        // ■ 追加: 履歴表示ロジック
+        function loadHistoryList() {
+            var historyList = document.getElementById('history-list');
+            var history = JSON.parse(localStorage.getItem('mfg_base_history') || '[]');
+
+            historyList.innerHTML = '';
+
+            if (history.length === 0) {
+                historyList.innerHTML = '<p class="text-xs text-slate-600 text-center py-4 italic">No saved reports.</p>';
+                return;
+            }
+
+            history.forEach(function (item) {
+                // ランクごとの色設定
+                var rankColor = 'bg-slate-400';
+                if (item.rank === 'S') rankColor = 'bg-yellow-500 shadow-[0_0_8px_#eab308]';
+                else if (item.rank === 'B') rankColor = 'bg-blue-400';
+                else if (item.rank === 'D') rankColor = 'bg-red-500';
+                else if (item.rank === 'C') rankColor = 'bg-slate-500';
+
+                var div = document.createElement('div');
+                div.className = 'group bg-slate-800/40 hover:bg-slate-800 border border-slate-800 hover:border-blue-500/30 p-2.5 rounded-lg cursor-pointer transition-all duration-200 relative overflow-hidden mb-2';
+                div.innerHTML =
+                    '<div class="flex items-center justify-between mb-1">' +
+                    '<span class="text-[10px] text-slate-400 font-mono">' + item.date + '</span>' +
+                    '<span class="w-2 h-2 rounded-full ' + rankColor + '"></span>' +
+                    '</div>' +
+                    '<p class="text-xs text-slate-300 truncate font-bold group-hover:text-white transition-colors">' + item.title + '</p>';
+
+                div.onclick = function () {
+                    switchTab('report');
+                    toggleSidebarIfMobile();
+                    document.getElementById('raw-notes').value = item.fullText;
+                    document.getElementById('output').innerText = item.result;
+                    document.getElementById('result-area').classList.remove('hidden');
+                    document.getElementById('result-area').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    showToast('履歴を復元しました', 'success');
+                };
+
+                historyList.appendChild(div);
+            });
+        }
+        window.loadHistoryList = loadHistoryList;
+
+        // ===== DOMContentLoaded =====
+        document.addEventListener('DOMContentLoaded', function () {
+            // 初期化時に履歴をロード
+            loadHistoryList();
+
+            // 設定をロード
+            loadSettings();
+
+            // ===== Chart.js グラフ初期化 =====
+            initCharts();
+
+            function initCharts() {
+                // スパークライン（売上推移ミニグラフ）
+                // → renderChart() で初期化するためここではスキップ
+
+
+                // 売上推移 折れ線グラフ
+                var salesCtx = document.getElementById('salesChart');
+                if (salesCtx) {
+                    var ctx = salesCtx.getContext('2d');
+                    var gradient = ctx.createLinearGradient(0, 0, 0, 200);
+                    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+                    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+                    new Chart(salesCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['9月', '10月', '11月', '12月', '1月', '2月'],
+                            datasets: [{
+                                label: '売上 (万円)',
+                                data: [980, 1150, 1020, 1340, 1180, 1240],
+                                borderColor: 'rgb(59, 130, 246)',
+                                backgroundColor: gradient,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: 'rgb(59, 130, 246)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 4,
+                                pointHoverRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: { duration: 1500, easing: 'easeOutQuart' },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#94a3b8',
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    callbacks: {
+                                        label: function (context) {
+                                            return '¥' + context.parsed.y.toLocaleString() + '万';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    min: 800,
+                                    grid: { color: 'rgba(148, 163, 184, 0.1)' },
+                                    ticks: {
+                                        color: '#64748b',
+                                        font: { size: 10 },
+                                        callback: function (value) { return '¥' + value; }
+                                    }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#64748b', font: { size: 10 } }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // 失注理由 ドーナツグラフ（凡例なし）
+                var lostCtx = document.getElementById('lostReasonsChart');
+                if (lostCtx) {
+                    new Chart(lostCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['技術継承不安', '価格競争', 'その他'],
+                            datasets: [{
+                                data: [45, 30, 25],
+                                backgroundColor: [
+                                    'rgb(99, 102, 241)',   // Indigo
+                                    'rgb(59, 130, 246)',   // Blue
+                                    'rgb(148, 163, 184)'   // Slate
+                                ],
+                                borderWidth: 0,
+                                hoverOffset: 10
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '70%',
+                            animation: { duration: 1200, easing: 'easeOutQuart' },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.95)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#94a3b8',
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    callbacks: {
+                                        label: function (context) {
+                                            return context.label + ': ' + context.parsed + '%';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
+            var generateBtn = document.getElementById('generate-btn');
+            var saveBtn = document.getElementById('save-btn');
+            var copyBtn = document.getElementById('copy-btn');
+            var regenerateBtn = document.getElementById('regenerate-btn');
+            var output = document.getElementById('output');
+            var resultArea = document.getElementById('result-area');
+            var rawNotes = document.getElementById('raw-notes');
+            var charCount = document.getElementById('char-count');
+
+            rawNotes.addEventListener('input', function () {
+                charCount.textContent = rawNotes.value.length + ' 文字';
+            });
+
+            rawNotes.addEventListener('keydown', function (e) {
+                if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
+                    e.preventDefault();
+                    generateBtn.click();
+                }
+            });
+
+            generateBtn.addEventListener('click', function () {
+                var text = rawNotes.value.trim();
+
+                // ■ バリデーションチェック (10文字未満は弾く)
+                if (!text || text.length < 10) {
+                    showToast('⚠️ 情報が少なすぎます。もう少し詳しく入力してください（10文字以上）', 'error');
+                    rawNotes.focus();
+                    return;
+                }
+
+                resultArea.classList.remove('hidden');
+                resultArea.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                output.innerHTML = '<div class="flex items-center text-blue-600 font-bold animate-pulse"><span class="text-2xl mr-3">🧠</span> AI Sales Director がデータを解析中...<br><span class="text-sm text-slate-500 font-normal ml-10 mt-1">過去の数千件の成約パターンと照合しています</span></div>';
+
+                setTimeout(function () {
+                    output.innerText = generateDemoStrategy(text);
+                    showToast('戦略立案が完了しました！', 'success');
+                }, 2000);
+            });
+
+            regenerateBtn.addEventListener('click', function () {
+                if (rawNotes.value.trim()) generateBtn.click();
+            });
+
+            copyBtn.addEventListener('click', function () {
+                var text = output.innerText;
+                if (!text || text.includes('解析中')) return;
+                navigator.clipboard.writeText(text).then(function () {
+                    showToast('コピーしました！', 'success');
+                });
+            });
+
+            saveBtn.addEventListener('click', function () {
+                var text = rawNotes.value;
+                var result = output.innerText;
+                if (!result || result.includes('解析中')) return;
+
+                // ランク判定
+                var rank = 'C';
+                if (result.includes('撤退推奨') || result.includes('Dランク')) rank = 'D';
+                else if (result.includes('条件付き継続') || result.includes('Bランク')) rank = 'B';
+                else if (result.includes('GOサイン') || result.includes('Sランク')) rank = 'S';
+
+                // データ作成
+                var newData = {
+                    id: Date.now(),
+                    date: new Date().toLocaleDateString(),
+                    title: text.slice(0, 15) + (text.length > 15 ? '...' : ''),
+                    fullText: text,
+                    result: result,
+                    rank: rank
+                };
+
+                // 保存
+                var history = JSON.parse(localStorage.getItem('mfg_base_history') || '[]');
+                history.unshift(newData);
+                localStorage.setItem('mfg_base_history', JSON.stringify(history));
+
+                // UI更新
+                saveBtn.innerHTML = '✅ 保存完了！';
+                saveBtn.classList.add('bg-green-600', 'border-green-400');
+                loadHistoryList();
+                showToast('保存しました！', 'success');
+
+                setTimeout(function () {
+                    saveBtn.innerHTML = '<span class="mr-2">💾</span> DBに保存';
+                    saveBtn.classList.remove('bg-green-600', 'border-green-400');
+                }, 2000);
+            });
+
+            // ===== PDF出力機能 =====
+            var pdfBtn = document.getElementById('pdf-btn');
+            pdfBtn.addEventListener('click', function () {
+                if (pdfBtn.disabled) return;
+
+                var outputText = document.getElementById('output').innerText;
+                if (!outputText || outputText.includes('解析中')) {
+                    showToast('⚠️ 出力するレポートがありません', 'error');
+                    return;
+                }
+
+                // ボタン無効化
+                pdfBtn.disabled = true;
+                pdfBtn.innerHTML = '<span class="mr-1">⏳</span> 生成中...';
+                pdfBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+                // PDF用コンテンツを作成（ヘッダー付き）
+                var today = new Date();
+                var dateStr = today.getFullYear() +
+                    ('0' + (today.getMonth() + 1)).slice(-2) +
+                    ('0' + today.getDate()).slice(-2);
+                var filename = 'Strategy_Report_' + dateStr + '.pdf';
+
+                // PDF用のラッパーを作成
+                var pdfWrapper = document.createElement('div');
+                pdfWrapper.style.cssText = 'padding: 20px; font-family: "Noto Sans JP", sans-serif; background: white; color: #1e293b;';
+                pdfWrapper.innerHTML =
+                    '<div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 15px;">' +
+                    '<p style="font-size: 10px; color: #94a3b8; letter-spacing: 2px; margin-bottom: 5px;">CONFIDENTIAL</p>' +
+                    '<h1 style="font-size: 18px; font-weight: bold; color: #1e293b; margin: 0;">MFG Base AI Report</h1>' +
+                    '<p style="font-size: 11px; color: #64748b; margin-top: 5px;">Generated: ' + today.toLocaleString('ja-JP') + '</p>' +
+                    '</div>' +
+                    '<div style="white-space: pre-wrap; font-size: 12px; line-height: 1.8; font-family: monospace;">' +
+                    outputText.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+                    '</div>' +
+                    '<div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e2e8f0; text-align: center;">' +
+                    '<p style="font-size: 9px; color: #94a3b8;">Powered by SOLVAN Inc. | MFG Base AI Sales Director</p>' +
+                    '</div>';
+
+                document.body.appendChild(pdfWrapper);
+
+                var opt = {
+                    margin: 10,
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(pdfWrapper).save().then(function () {
+                    document.body.removeChild(pdfWrapper);
+                    pdfBtn.innerHTML = '<span class="mr-1">📄</span> PDF出力';
+                    pdfBtn.disabled = false;
+                    pdfBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    showToast('✅ PDFをダウンロードしました', 'success');
+                }).catch(function (err) {
+                    document.body.removeChild(pdfWrapper);
+                    pdfBtn.innerHTML = '<span class="mr-1">📄</span> PDF出力';
+                    pdfBtn.disabled = false;
+                    pdfBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    showToast('⚠️ PDF生成に失敗しました', 'error');
+                    console.error('PDF Error:', err);
+                });
+            });
+
+            // ===== 音声入力 (Web Speech API) =====
+            var voiceBtn = document.getElementById('voice-btn');
+            var voiceStatus = document.getElementById('voice-status');
+            var voiceStatusText = document.getElementById('voice-status-text');
+            var isRecording = false;
+            var recognition = null;
+
+            // Web Speech API対応チェック
+            var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+            if (SpeechRecognition) {
+                recognition = new SpeechRecognition();
+                recognition.lang = 'ja-JP';
+                recognition.interimResults = true;
+                recognition.continuous = true;
+
+                recognition.onstart = function () {
+                    isRecording = true;
+                    voiceBtn.classList.remove('bg-slate-200', 'hover:bg-slate-300', 'text-slate-500');
+                    voiceBtn.classList.add('bg-red-500', 'text-white', 'mic-pulse');
+                    voiceStatus.classList.remove('hidden');
+                    voiceStatusText.textContent = '聞いています...';
+                    console.log('音声認識開始');
+                };
+
+                recognition.onresult = function (event) {
+                    var transcript = '';
+                    for (var i = event.resultIndex; i < event.results.length; i++) {
+                        if (event.results[i].isFinal) {
+                            transcript += event.results[i][0].transcript;
+                        }
+                    }
+                    if (transcript) {
+                        // 既存テキストに追記（句点付き）
+                        var currentText = rawNotes.value;
+                        rawNotes.value += transcript + '。';
+                        charCount.textContent = rawNotes.value.length + ' 文字';
+                        voiceStatusText.textContent = '認識: ' + transcript.substring(0, 15) + '...';
+                    }
+                };
+
+                recognition.onerror = function (event) {
+                    console.error('音声認識エラー:', event.error);
+                    if (event.error === 'not-allowed') {
+                        showToast('マイクの使用が許可されていません', 'error');
+                    } else if (event.error === 'no-speech') {
+                        voiceStatusText.textContent = '音声が検出されませんでした';
+                    } else {
+                        showToast('音声認識エラー: ' + event.error, 'error');
+                    }
+                    stopRecording();
+                };
+
+                recognition.onend = function () {
+                    if (isRecording) {
+                        // 継続録音モードなら再開
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            stopRecording();
+                        }
+                    }
+                };
+
+                function stopRecording() {
+                    isRecording = false;
+                    recognition.stop();
+                    voiceBtn.classList.add('bg-slate-200', 'hover:bg-slate-300', 'text-slate-500');
+                    voiceBtn.classList.remove('bg-red-500', 'text-white', 'mic-pulse');
+                    voiceStatus.classList.add('hidden');
+                    console.log('音声認識停止');
+                }
+
+                voiceBtn.addEventListener('click', function () {
+                    if (isRecording) {
+                        stopRecording();
+                    } else {
+                        try {
+                            recognition.start();
+                        } catch (e) {
+                            console.error('音声認識開始エラー:', e);
+                        }
+                    }
+                });
+            } else {
+                // 非対応ブラウザ
+                voiceBtn.addEventListener('click', function () {
+                    showToast('お使いのブラウザは音声入力に対応していません', 'error');
+                });
+                console.warn('Web Speech API not supported');
+            }
         });
     </script>
 </body>
