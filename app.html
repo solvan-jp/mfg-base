@@ -11,6 +11,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap"
         rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -129,14 +130,27 @@
                 </div>
             </div>
 
-            <div class="p-4 border-t border-slate-800 bg-slate-950/30">
+            <div class="p-4 border-t border-slate-800 bg-slate-950/30 flex-shrink-0">
+                <div class="flex items-center gap-3 mb-4">
+                    <div
+                        class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-xs font-bold shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20">
+                        HY</div>
+                    <div>
+                        <p class="text-xs font-bold text-white">Haruki Yamana</p>
+                        <p class="text-[10px] text-slate-400">Administrator</p>
+                    </div>
+                </div>
+                <button onclick="showDemoAlert('設定')"
+                    class="text-xs text-slate-500 hover:text-blue-400 w-full text-left flex items-center transition mb-2">
+                    <span class="mr-2">⚙️</span> 設定
+                </button>
                 <button onclick="exportData()"
                     class="text-xs text-slate-500 hover:text-blue-400 w-full text-left flex items-center transition mb-2">
                     <span class="mr-2">📤</span> データをエクスポート
                 </button>
-                <button onclick="clearHistory()"
+                <button onclick="showDemoAlert('ログアウト')"
                     class="text-xs text-slate-500 hover:text-red-400 w-full text-left flex items-center transition">
-                    <span class="mr-2">🗑</span> データを全消去
+                    <span class="mr-2">�</span> ログアウト
                 </button>
                 <p class="text-[10px] text-slate-700 mt-3 pt-2 border-t border-slate-800">© 2026 SOLVAN Inc.</p>
             </div>
@@ -227,43 +241,32 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- 売上推移 折れ線グラフ -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
                         <h3 class="font-bold text-slate-700 mb-4 flex items-center">
-                            <span class="bg-slate-100 p-1.5 rounded mr-2">📉</span>
-                            失注・難航理由のAI分析
+                            <span class="bg-slate-100 p-1.5 rounded mr-2">�</span>
+                            売上推移（過去6ヶ月）
                         </h3>
-                        <div class="space-y-4">
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-bold text-slate-700">技術継承への不安 (品質懸念)</span>
-                                    <span class="font-bold text-indigo-600">45%</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                                    <div class="bg-indigo-600 h-full" style="width: 45%"></div>
-                                </div>
-                                <p class="text-xs text-slate-400 mt-1">→ AIアドバイス: 動画マニュアル機能の提案を強化せよ</p>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-bold text-slate-700">価格競争 (コスト)</span>
-                                    <span class="font-bold text-blue-600">30%</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                                    <div class="bg-blue-500 h-full" style="width: 30%"></div>
-                                </div>
-                            </div>
-                            <div>
-                                <div class="flex justify-between text-sm mb-1">
-                                    <span class="font-bold text-slate-700">その他 (納期・仕様など)</span>
-                                    <span class="font-bold text-slate-500">25%</span>
-                                </div>
-                                <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden">
-                                    <div class="bg-slate-400 h-full" style="width: 25%"></div>
-                                </div>
-                            </div>
+                        <div class="relative h-64">
+                            <canvas id="salesChart"></canvas>
                         </div>
                     </div>
 
+                    <!-- 失注理由 ドーナツグラフ -->
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
+                        <h3 class="font-bold text-slate-700 mb-4 flex items-center">
+                            <span class="bg-slate-100 p-1.5 rounded mr-2">📉</span>
+                            失注・難航理由
+                        </h3>
+                        <div class="relative h-52">
+                            <canvas id="lostReasonsChart"></canvas>
+                        </div>
+                        <p class="text-xs text-slate-400 mt-3 text-center">※ホバーで詳細表示</p>
+                    </div>
+                </div>
+
+                <!-- 今週の勝負案件 -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="font-bold text-slate-700 mb-4 flex items-center">
                             <span class="bg-slate-100 p-1.5 rounded mr-2">🔥</span>
@@ -526,7 +529,14 @@
                 '━━━━━━━━━━━━━━━━━━━━━━━━';
         }
 
-        function exportData() { showToast('エクスポート機能 (デモ)', 'success'); }
+        function exportData() {
+            showToast('⚠️ デモモードではエクスポート機能はご利用いただけません', 'error');
+        }
+
+        function showDemoAlert(featureName) {
+            showToast('⚠️ ' + featureName + ' はデモモードではご利用いただけません', 'error');
+        }
+        window.showDemoAlert = showDemoAlert;
 
         // ■ 追加: 履歴クリア機能
         function clearHistory() {
@@ -586,6 +596,127 @@
         document.addEventListener('DOMContentLoaded', function () {
             // 初期化時に履歴をロード
             loadHistoryList();
+
+            // ===== Chart.js グラフ初期化 =====
+            initCharts();
+
+            function initCharts() {
+                // 売上推移 折れ線グラフ
+                var salesCtx = document.getElementById('salesChart');
+                if (salesCtx) {
+                    var ctx = salesCtx.getContext('2d');
+                    var gradient = ctx.createLinearGradient(0, 0, 0, 250);
+                    gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
+                    gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
+
+                    new Chart(salesCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['9月', '10月', '11月', '12月', '1月', '2月'],
+                            datasets: [{
+                                label: '売上 (万円)',
+                                data: [980, 1150, 1020, 1340, 1180, 1240],
+                                borderColor: 'rgb(59, 130, 246)',
+                                backgroundColor: gradient,
+                                fill: true,
+                                tension: 0.4,
+                                pointBackgroundColor: 'rgb(59, 130, 246)',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 5,
+                                pointHoverRadius: 7
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            animation: { duration: 1500, easing: 'easeOutQuart' },
+                            plugins: {
+                                legend: { display: false },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#94a3b8',
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    callbacks: {
+                                        label: function (context) {
+                                            return '¥' + context.parsed.y.toLocaleString() + '万';
+                                        }
+                                    }
+                                }
+                            },
+                            scales: {
+                                y: {
+                                    beginAtZero: false,
+                                    min: 800,
+                                    grid: { color: 'rgba(148, 163, 184, 0.1)' },
+                                    ticks: {
+                                        color: '#64748b',
+                                        callback: function (value) { return '¥' + value; }
+                                    }
+                                },
+                                x: {
+                                    grid: { display: false },
+                                    ticks: { color: '#64748b' }
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // 失注理由 ドーナツグラフ
+                var lostCtx = document.getElementById('lostReasonsChart');
+                if (lostCtx) {
+                    new Chart(lostCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['品質懸念', '価格競争', '納期・仕様', '競合優位'],
+                            datasets: [{
+                                data: [45, 30, 15, 10],
+                                backgroundColor: [
+                                    'rgb(99, 102, 241)',   // Indigo
+                                    'rgb(59, 130, 246)',   // Blue
+                                    'rgb(100, 116, 139)',  // Slate
+                                    'rgb(20, 184, 166)'    // Teal
+                                ],
+                                borderWidth: 0,
+                                hoverOffset: 8
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '65%',
+                            animation: { duration: 1200, easing: 'easeOutQuart' },
+                            plugins: {
+                                legend: {
+                                    position: 'bottom',
+                                    labels: {
+                                        color: '#64748b',
+                                        font: { size: 11 },
+                                        padding: 12,
+                                        usePointStyle: true,
+                                        pointStyle: 'circle'
+                                    }
+                                },
+                                tooltip: {
+                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    titleColor: '#fff',
+                                    bodyColor: '#94a3b8',
+                                    padding: 12,
+                                    cornerRadius: 8,
+                                    callbacks: {
+                                        label: function (context) {
+                                            return context.label + ': ' + context.parsed + '%';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            }
 
             var generateBtn = document.getElementById('generate-btn');
             var saveBtn = document.getElementById('save-btn');
