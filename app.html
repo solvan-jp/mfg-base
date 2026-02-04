@@ -202,8 +202,9 @@
             <div id="view-dashboard" class="p-8 max-w-6xl mx-auto space-y-6 animate-fade-in relative z-10">
                 <div class="flex justify-between items-end mb-2">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Executive Dashboard</h2>
-                        <p class="text-sm text-slate-500 dark:text-slate-400">2026年2月4日 現在の営業状況概況</p>
+                        <h2 id="dash-title" class="text-2xl font-bold text-slate-800 dark:text-white">Executive
+                            Dashboard</h2>
+                        <p id="dash-subtitle" class="text-sm text-slate-500 dark:text-slate-400">全社営業状況概況サマリー</p>
                     </div>
                     <button
                         class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition">
@@ -216,9 +217,11 @@
                         class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
                         <div class="flex justify-between items-start mb-2">
                             <div>
-                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">今月の売上着地見込</p>
-                                <p class="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">¥12,400,000</p>
-                                <div
+                                <p id="kpi-1-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    今月の売上着地見込</p>
+                                <p id="kpi-1-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
+                                    ¥12,400,000</p>
+                                <div id="kpi-1-sub"
                                     class="flex items-center mt-1 text-sm font-bold text-green-600 dark:text-green-400">
                                     <span>▲ 達成率 85%</span>
                                 </div>
@@ -239,9 +242,12 @@
                                     d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
                             </svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">AI 成約確率 (平均)</p>
-                        <p class="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">64.2%</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-blue-600 dark:text-blue-400">
+                        <p id="kpi-2-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">AI 成約確率
+                            (平均)</p>
+                        <p id="kpi-2-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">64.2%
+                        </p>
+                        <div id="kpi-2-sub"
+                            class="flex items-center mt-2 text-sm font-bold text-blue-600 dark:text-blue-400">
                             <span>先月比 +12pt ↑</span>
                         </div>
                         <p class="text-xs text-slate-400 mt-3">MFG Base導入により提案精度が向上中</p>
@@ -255,21 +261,22 @@
                                 <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
                             </svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">アラート案件</p>
-                        <p class="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">3件</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-red-500">
+                        <p id="kpi-3-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">アラート案件</p>
+                        <p id="kpi-3-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">3件</p>
+                        <div id="kpi-3-sub" class="flex items-center mt-2 text-sm font-bold text-red-500">
                             <span>⚠️ 要注意</span>
                         </div>
                         <p class="text-xs text-slate-400 mt-3">競合との価格乖離・担当者変更など</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Admin Section (Executive Dashboard) -->
+                <div id="admin-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <!-- 失注・難航理由のAI分析 -->
                     <div
                         class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 lg:col-span-2">
                         <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
-                            <span class="bg-slate-100 dark:bg-slate-700 p-1.5 rounded mr-2">📉</span>
+                            <span class="bg-indigo-100 dark:bg-indigo-900/50 p-1.5 rounded mr-2">📉</span>
                             失注・難航理由のAI分析
                         </h3>
                         <div class="flex flex-col md:flex-row items-center justify-center gap-6 h-64">
@@ -307,50 +314,99 @@
                             <canvas id="salesChart"></canvas>
                         </div>
                     </div>
+
+                    <!-- 今週の勝負案件 (Admin & Member共通コンポーネントとして利用も可能だが今回はAdmin専用に配置) -->
+                    <div class="lg:col-span-3 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div
+                            class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                            <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                                <span class="bg-slate-100 dark:bg-slate-700 p-1.5 rounded mr-2">🔥</span>
+                                今週の勝負案件
+                            </h3>
+                            <div class="space-y-3">
+                                <div
+                                    class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800 hover:border-blue-300 transition cursor-pointer">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded">Rank
+                                            S</span>
+                                        <span class="text-xs text-slate-400">明日訪問</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">久留米精密工業</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: コストではなく品質で勝負</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-100 dark:border-amber-800 hover:border-amber-300 transition cursor-pointer">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 rounded">Rank
+                                            A</span>
+                                        <span class="text-xs text-slate-400">水曜連絡</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">山田精密工業</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: 競合対策シート持参</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600 hover:border-slate-300 transition cursor-pointer opacity-70">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-slate-600 px-1.5 py-0.5 rounded">Rank
+                                            B</span>
+                                        <span class="text-xs text-slate-400">木曜連絡</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">博多食品加工</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: 技術継承のデータ化提案</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- 今週の勝負案件 -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Member Section (Sales Member) -->
+                <div id="member-section" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div
                         class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
                         <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
-                            <span class="bg-slate-100 dark:bg-slate-700 p-1.5 rounded mr-2">🔥</span>
-                            今週の勝負案件
+                            <span class="bg-green-100 dark:bg-green-900/50 p-1.5 rounded mr-2">✅</span>
+                            今日のToDo (Member)
                         </h3>
-                        <div class="space-y-3">
-                            <div
-                                class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800 hover:border-blue-300 transition cursor-pointer">
-                                <div class="flex justify-between items-start">
-                                    <span
-                                        class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded">Rank
-                                        S</span>
-                                    <span class="text-xs text-slate-400">明日訪問</span>
+                        <ul class="space-y-3">
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">14:00 久留米精密 訪問</span>
+                            </li>
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">16:00 博多食品
+                                    見積送付</span>
+                            </li>
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">日報入力 (MFG
+                                    Base)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-blue-100 dark:bg-blue-900/50 p-1.5 rounded mr-2">📊</span>
+                            個人ノルマ達成状況
+                        </h3>
+                        <div class="relative pt-1">
+                            <div class="flex mb-2 items-center justify-between">
+                                <div><span
+                                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">進行中</span>
                                 </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">久留米精密工業</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: コストではなく品質で勝負</p>
+                                <div class="text-right"><span
+                                        class="text-xs font-semibold inline-block text-blue-600">70%</span></div>
                             </div>
-                            <div
-                                class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-100 dark:border-amber-800 hover:border-amber-300 transition cursor-pointer">
-                                <div class="flex justify-between items-start">
-                                    <span
-                                        class="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 rounded">Rank
-                                        A</span>
-                                    <span class="text-xs text-slate-400">水曜連絡</span>
+                            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                                <div style="width:70%"
+                                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500">
                                 </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">山田精密工業</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: 競合対策シート持参</p>
                             </div>
-                            <div
-                                class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600 hover:border-slate-300 transition cursor-pointer opacity-70">
-                                <div class="flex justify-between items-start">
-                                    <span
-                                        class="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-slate-600 px-1.5 py-0.5 rounded">Rank
-                                        B</span>
-                                    <span class="text-xs text-slate-400">木曜連絡</span>
-                                </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">博多食品加工</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: 技術継承のデータ化提案</p>
-                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">今月の目標まであと ¥600,000</p>
                         </div>
                     </div>
                 </div>
@@ -455,6 +511,33 @@
                     </h3>
 
                     <div class="space-y-6">
+                        <!-- 権限選択 (RBAC) -->
+                        <div>
+                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">ユーザー権限 (RBAC)</p>
+                            <div class="flex gap-4">
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="userRole" value="admin" class="mr-3 accent-blue-600"
+                                        checked onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">👑 管理者
+                                            (Administrator)</span>
+                                        <span class="text-xs text-slate-400">全社データ閲覧可</span>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="userRole" value="member" class="mr-3 accent-blue-600"
+                                        onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">🏃 現場メンバー
+                                            (Member)</span>
+                                        <span class="text-xs text-slate-400">個人データのみ</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
                         <div>
                             <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">文字サイズ</p>
                             <div class="flex gap-4">
@@ -602,6 +685,9 @@
             setTimeout(function () { toast.classList.add('translate-y-20'); }, 3000);
         }
 
+        // ===== グローバル変数 =====
+        let mainChart = null;
+
         // ===== 設定管理 =====
         window.updateSettings = function () {
             // 文字サイズ
@@ -622,31 +708,160 @@
                 document.documentElement.classList.remove('dark');
             }
 
+            // 権限 (RBAC)
+            var roleRadio = document.querySelector('input[name="userRole"]:checked');
+            var role = roleRadio ? roleRadio.value : 'admin';
+            applyRole(role);
+
             // 保存
-            var settings = { size: size, theme: theme };
+            var settings = { size: size, theme: theme, role: role };
             localStorage.setItem('mfg_base_settings', JSON.stringify(settings));
-            showToast('設定を保存しました', 'success');
+            // showToast('設定を保存しました', 'success'); // 頻繁に出るとうるさいので非表示
         };
+
+        // 権限による表示切り替え
+        function applyRole(role) {
+            const adminSec = document.getElementById('admin-section');
+            const memberSec = document.getElementById('member-section');
+            const sidebarRole = document.getElementById('sidebar-role');
+            const dashTitle = document.getElementById('dash-title');
+            const dashSub = document.getElementById('dash-subtitle');
+
+            // KPI要素
+            const k1l = document.getElementById('kpi-1-label'), k1v = document.getElementById('kpi-1-value'), k1s = document.getElementById('kpi-1-sub');
+            const k2l = document.getElementById('kpi-2-label'), k2v = document.getElementById('kpi-2-value'), k2s = document.getElementById('kpi-2-sub');
+            const k3l = document.getElementById('kpi-3-label'), k3v = document.getElementById('kpi-3-value'), k3s = document.getElementById('kpi-3-sub');
+
+            if (role === 'admin') {
+                // Admin Mode
+                if (adminSec) adminSec.classList.remove('hidden');
+                if (memberSec) memberSec.classList.add('hidden');
+                if (sidebarRole) sidebarRole.textContent = 'Administrator';
+                if (dashTitle) dashTitle.textContent = 'Executive Dashboard';
+                if (dashSub) dashSub.textContent = '全社営業状況概況サマリー';
+
+                if (k1l) k1l.textContent = '今月の売上着地見込';
+                if (k1v) k1v.textContent = '¥12,400,000';
+                if (k1s) {
+                    k1s.innerHTML = '<span>▲ 達成率 85%</span>';
+                    k1s.className = 'flex items-center mt-1 text-sm font-bold text-green-600 dark:text-green-400';
+                }
+
+                if (k2l) k2l.textContent = 'AI 成約確率 (平均)';
+                if (k2v) k2v.textContent = '64.2%';
+                if (k2s) {
+                    k2s.innerHTML = '<span>先月比 +12pt ↑</span>';
+                    k2s.className = 'flex items-center mt-2 text-sm font-bold text-blue-600 dark:text-blue-400';
+                }
+
+                if (k3l) k3l.textContent = 'アラート案件';
+                if (k3v) k3v.textContent = '3件';
+                if (k3s) {
+                    k3s.innerHTML = '<span>⚠️ 要注意</span>';
+                    k3s.className = 'flex items-center mt-2 text-sm font-bold text-red-500';
+                }
+
+                renderChart([8.5, 9.2, 8.8, 10.5, 11.2, 12.4]); // 全社データ（ダミー）
+                showToast('管理者モードに切り替えました', 'success');
+
+            } else {
+                // Member Mode
+                if (adminSec) adminSec.classList.add('hidden');
+                if (memberSec) memberSec.classList.remove('hidden');
+                if (sidebarRole) sidebarRole.textContent = 'Sales Member';
+                if (dashTitle) dashTitle.textContent = 'My Performance';
+                if (dashSub) dashSub.textContent = '個人の活動状況と目標';
+
+                if (k1l) k1l.textContent = '個人売上 (達成率)';
+                if (k1v) k1v.textContent = '¥1,400,000 (70%)';
+                if (k1s) {
+                    k1s.innerHTML = '<span>あと ¥600k で目標</span>';
+                    k1s.className = 'flex items-center mt-1 text-sm font-bold text-slate-500 dark:text-slate-400';
+                }
+
+                if (k2l) k2l.textContent = '今月の訪問予定';
+                if (k2v) k2v.textContent = '12件';
+                if (k2s) {
+                    k2s.innerHTML = '<span>完了: 4件 / 残り: 8件</span>';
+                    k2s.className = 'flex items-center mt-2 text-sm font-bold text-slate-500 dark:text-slate-400';
+                }
+
+                if (k3l) k3l.textContent = '提案中案件';
+                if (k3v) k3v.textContent = '5件';
+                if (k3s) {
+                    k3s.innerHTML = '<span>Sランク: 1件 / Aランク: 2件</span>';
+                    k3s.className = 'flex items-center mt-2 text-sm font-bold text-blue-500';
+                }
+
+                renderChart([1.0, 1.2, 1.1, 1.5, 1.3, 1.4]); // 個人データ（ダミー）
+                showToast('メンバーモードに切り替えました', 'success');
+            }
+        }
+
+        // メインチャート描画更新
+        function renderChart(data) {
+            const ctx = document.getElementById('salesSparkline');
+            // ※以前のコードで salesSparkline というIDで初期化されていたのでそれを使う
+            // もしIDが違う場合は適宜修正が必要だが、既存コードではinitChartsでnew Chartしている
+            // ここでは既存のチャートインスタンスがあれば破棄して再描画する戦略をとる必要があるが
+            // initChartsで作成されたインスタンスを変数保持していないため、canvasを再取得して作り直す
+
+            // 既存のチャートがあれば破壊するためのグローバル管理が必要だが、
+            // 簡易的に chart.js の getChart を使うか、canvasを再生成する
+
+            const chartStatus = Chart.getChart("salesSparkline"); // <canvas> id
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }
+
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['9月', '10月', '11月', '12月', '1月', '2月'],
+                        datasets: [{
+                            data: data,
+                            borderColor: '#2563eb',
+                            backgroundColor: function (context) {
+                                var ctx = context.chart.ctx;
+                                var gradient = ctx.createLinearGradient(0, 0, 0, 60);
+                                gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+                                gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+                                return gradient;
+                            },
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                        scales: { x: { display: false }, y: { display: false, min: 0 } }, // min:0に変更
+                        animation: { duration: 1000 }
+                    }
+                });
+            }
+        }
 
         window.updateProfile = function () {
             var nameInput = document.getElementById('setting-username');
-            var roleInput = document.getElementById('setting-role');
+            // var roleInput = document.getElementById('setting-role'); // 削除
             var name = nameInput ? nameInput.value : 'Haruki Yamana';
-            var role = roleInput ? roleInput.value : 'Administrator';
 
             var sidebarName = document.getElementById('sidebar-username');
-            var sidebarRole = document.getElementById('sidebar-role');
             if (sidebarName) sidebarName.textContent = name;
-            if (sidebarRole) sidebarRole.textContent = role;
 
-            localStorage.setItem('mfg_base_profile', JSON.stringify({ name: name, role: role }));
+            localStorage.setItem('mfg_base_profile', JSON.stringify({ name: name }));
         };
 
         function loadSettings() {
             // 設定ロード
             try {
                 var savedSettings = localStorage.getItem('mfg_base_settings');
-                var s = savedSettings ? JSON.parse(savedSettings) : { size: 'normal', theme: 'light' };
+                var s = savedSettings ? JSON.parse(savedSettings) : { size: 'normal', theme: 'light', role: 'admin' };
 
                 var sizeRadio = document.querySelector('input[name="textSize"][value="' + s.size + '"]');
                 if (sizeRadio) sizeRadio.checked = true;
@@ -654,9 +869,19 @@
                 var themeRadio = document.querySelector('input[name="themeMode"][value="' + s.theme + '"]');
                 if (themeRadio) themeRadio.checked = true;
 
+                // 権限ロード
+                var roleRadio = document.querySelector('input[name="userRole"][value="' + (s.role || 'admin') + '"]');
+                if (roleRadio) roleRadio.checked = true;
+
                 // 設定適用
                 if (s.size === 'large') document.body.classList.add('text-large');
                 if (s.theme === 'dark') document.documentElement.classList.add('dark');
+
+                // 権限適用 (初回ロード時はトースト出さないようにフラグ管理したいが、簡易的にそのまま呼ぶ)
+                // ただしapplyRole内でトーストを出しているので、初回ロード時は出したくない場合はロジック調整が必要
+                // ここではシンプルに呼び出す
+                applyRole(s.role || 'admin');
+
             } catch (e) {
                 console.log('Settings load error:', e);
             }
@@ -664,21 +889,19 @@
             // プロフィールロード
             try {
                 var savedProfile = localStorage.getItem('mfg_base_profile');
-                var p = savedProfile ? JSON.parse(savedProfile) : { name: 'Haruki Yamana', role: 'Administrator' };
+                var p = savedProfile ? JSON.parse(savedProfile) : { name: 'Haruki Yamana' };
 
                 var usernameInput = document.getElementById('setting-username');
-                var roleInput = document.getElementById('setting-role');
                 if (usernameInput) usernameInput.value = p.name;
-                if (roleInput) roleInput.value = p.role;
 
                 var sidebarName = document.getElementById('sidebar-username');
-                var sidebarRole = document.getElementById('sidebar-role');
                 if (sidebarName) sidebarName.textContent = p.name;
-                if (sidebarRole) sidebarRole.textContent = p.role;
             } catch (e) {
                 console.log('Profile load error:', e);
             }
         }
+
+
 
         // ===== デモ戦略生成（4パターン分岐） =====
         function generateDemoStrategy(notes) {
@@ -826,37 +1049,8 @@
 
             function initCharts() {
                 // スパークライン（売上推移ミニグラフ）
-                var sparkCtx = document.getElementById('salesSparkline');
-                if (sparkCtx) {
-                    new Chart(sparkCtx, {
-                        type: 'line',
-                        data: {
-                            labels: ['9月', '10月', '11月', '12月', '1月', '2月'],
-                            datasets: [{
-                                data: [8.5, 9.2, 8.8, 10.5, 11.2, 12.4],
-                                borderColor: '#2563eb',
-                                backgroundColor: function (context) {
-                                    var ctx = context.chart.ctx;
-                                    var gradient = ctx.createLinearGradient(0, 0, 0, 60);
-                                    gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
-                                    gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
-                                    return gradient;
-                                },
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.4,
-                                pointRadius: 0
-                            }]
-                        },
-                        options: {
-                            responsive: true,
-                            maintainAspectRatio: false,
-                            plugins: { legend: { display: false }, tooltip: { enabled: false } },
-                            scales: { x: { display: false }, y: { display: false, min: 5 } },
-                            animation: { duration: 1000 }
-                        }
-                    });
-                }
+                // → renderChart() で初期化するためここではスキップ
+
 
                 // 売上推移 折れ線グラフ
                 var salesCtx = document.getElementById('salesChart');
