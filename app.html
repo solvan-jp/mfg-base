@@ -711,16 +711,22 @@
             // 権限 (RBAC)
             var roleRadio = document.querySelector('input[name="userRole"]:checked');
             var role = roleRadio ? roleRadio.value : 'admin';
-            applyRole(role);
+
+            // 直前の設定と比較して、権限が変わった場合のみアラートを出す
+            var prevSettings = JSON.parse(localStorage.getItem('mfg_base_settings') || '{}');
+            var prevRole = prevSettings.role || 'admin';
+            var roleChanged = (role !== prevRole);
+
+            applyRole(role, roleChanged);
 
             // 保存
             var settings = { size: size, theme: theme, role: role };
             localStorage.setItem('mfg_base_settings', JSON.stringify(settings));
-            // showToast('設定を保存しました', 'success'); // 頻繁に出るとうるさいので非表示
         };
 
         // 権限による表示切り替え
-        function applyRole(role) {
+        function applyRole(role, showAlert) {
+            if (showAlert === undefined) showAlert = false; // デフォルト非表示
             const adminSec = document.getElementById('admin-section');
             const memberSec = document.getElementById('member-section');
             const sidebarRole = document.getElementById('sidebar-role');
@@ -762,7 +768,7 @@
                 }
 
                 renderChart([8.5, 9.2, 8.8, 10.5, 11.2, 12.4]); // 全社データ（ダミー）
-                showToast('管理者モードに切り替えました', 'success');
+                if (showAlert) showToast('管理者モードに切り替えました', 'success');
 
             } else {
                 // Member Mode
@@ -794,7 +800,7 @@
                 }
 
                 renderChart([1.0, 1.2, 1.1, 1.5, 1.3, 1.4]); // 個人データ（ダミー）
-                showToast('メンバーモードに切り替えました', 'success');
+                if (showAlert) showToast('メンバーモードに切り替えました', 'success');
             }
         }
 
