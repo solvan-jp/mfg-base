@@ -222,7 +222,7 @@
     </style>
 </head>
 
-<body class="font-sans bg-navy-950 text-white antialiased">
+<body class="font-sans bg-slate-950 text-white antialiased">
 
     <!-- 背景エフェクト -->
     <div class="fixed inset-0 grid-bg pointer-events-none z-0"></div>
@@ -239,53 +239,43 @@
     </div>
 
     <!-- ナビゲーション -->
-    <nav class="fixed top-0 left-0 right-0 z-50 glass">
-        <div class="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <span class="text-electric-500 text-2xl font-black">◆</span>
-                <span class="text-xl font-bold tracking-tight">MFG Base</span>
-                <span class="text-[10px] text-slate-500 tracking-widest uppercase ml-2">by SOLVAN</span>
+    <header class="fixed w-full z-50 bg-slate-900/80 backdrop-blur-md border-b border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex justify-between items-center">
+            <div class="text-xl font-extrabold text-white flex items-center gap-2">
+                <span class="text-blue-500">◆</span> MFG Base
             </div>
-            <button onclick="openLoginModal()"
-                class="bg-electric-500/20 hover:bg-electric-500/30 border border-electric-500/50 text-electric-400 px-4 py-2 rounded-lg text-sm font-bold transition cursor-pointer">
-                ログイン
-            </button>
+            <nav class="hidden md:flex gap-8 text-sm font-bold text-slate-400">
+                <a href="#" class="hover:text-white transition">Concept</a>
+                <a href="#" class="hover:text-white transition">Features</a>
+                <a href="#" class="hover:text-white transition">Case Study</a>
+            </nav>
+            <a href="./app.html"
+                class="bg-blue-600 hover:bg-blue-500 text-white px-6 py-2.5 rounded-full text-sm font-bold shadow-[0_0_15px_rgba(59,130,246,0.4)] transition transform hover:scale-105">
+                デモを試す 🚀
+            </a>
         </div>
-    </nav>
+    </header>
 
     <!-- ヒーローセクション -->
-    <section class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden pt-20">
-        <!-- デコレーション -->
-        <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-electric-500/10 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-1/4 right-1/4 w-80 h-80 bg-teal-500/10 rounded-full blur-[100px]"></div>
-
-        <div class="max-w-5xl mx-auto px-6 text-center relative z-10">
-            <div class="fade-in">
-                <p class="text-electric-400 text-sm font-bold tracking-widest uppercase mb-6">
-                    Manufacturing × AI Platform
-                </p>
-                <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight mb-6">
-                    AIで日本の製造業の<br>
-                    <span class="text-gradient">営業を再発明する</span>
-                </h1>
-                <p class="text-xl sm:text-2xl text-slate-400 font-medium mb-10">
-                    "売れる仕組み"をすべての企業に
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                    <button onclick="openLoginModal()"
-                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl cursor-pointer">
-                        <span>無料でデモを試す</span>
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
-                        </svg>
-                    </button>
-                    <a href="#contact"
-                        class="inline-flex items-center gap-2 border border-slate-600 hover:border-slate-500 hover:bg-slate-800/50 text-white text-lg font-bold px-8 py-5 rounded-xl transition">
-                        <span>お問い合わせ</span>
-                    </a>
-                </div>
-                <p class="text-slate-500 text-sm mt-4">クレジットカード不要・即日利用可能</p>
+    <section class="relative pt-32 pb-20 overflow-hidden bg-slate-950">
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#1e293b_0%,#020617_100%)]"></div>
+        <div class="relative z-10 max-w-5xl mx-auto px-6 text-center">
+            <h1 class="text-5xl md:text-7xl font-black text-white leading-tight mb-6">
+                その「一言」が<br><span
+                    class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">利益</span>に変わる。
+            </h1>
+            <p class="text-lg text-slate-400 mb-10 max-w-2xl mx-auto">
+                製造業特化型 AI Sales Director。現場の商談メモから、勝てる戦略を10秒で立案。
+            </p>
+            <div class="flex flex-col md:flex-row gap-4 justify-center">
+                <a href="./app.html"
+                    class="bg-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-xl shadow-2xl hover:bg-blue-500 transition active:scale-95">
+                    今すぐ無料でデモを体験
+                </a>
+                <button
+                    class="bg-slate-800 text-slate-300 px-10 py-5 rounded-2xl font-bold text-xl border border-slate-700 hover:bg-slate-700 transition">
+                    資料をダウンロード
+                </button>
             </div>
         </div>
     </section>
@@ -368,14 +358,14 @@
                         今すぐMFG Baseをお試しください。<br>
                         まずはデモ版で、AIの威力を体感してください。
                     </p>
-                    <button onclick="openLoginModal()"
-                        class="cta-btn inline-flex items-center gap-3 bg-gradient-to-r from-electric-500 to-teal-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl cursor-pointer">
+                    <a href="./app.html"
+                        class="inline-flex items-center gap-3 bg-blue-600 hover:bg-blue-500 text-white text-lg font-bold px-10 py-5 rounded-xl shadow-xl transition transform hover:scale-105">
                         <span>無料でデモを試す</span>
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
                         </svg>
-                    </button>
+                    </a>
                 </div>
             </div>
         </div>
