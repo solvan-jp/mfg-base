@@ -12,6 +12,7 @@
         rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -416,13 +417,17 @@
                                 class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-medium transition flex items-center cursor-pointer">
                                 📋 コピー
                             </button>
+                            <button id="pdf-btn"
+                                class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center cursor-pointer">
+                                <span class="mr-1">📄</span> PDF出力
+                            </button>
                             <button id="save-btn"
                                 class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md flex items-center border border-blue-400/50 transition active:scale-95 cursor-pointer">
                                 <span class="mr-2">💾</span> DBに保存
                             </button>
                         </div>
                     </div>
-                    <div class="p-8 bg-slate-50 dark:bg-slate-800/50">
+                    <div id="pdf-content" class="p-8 bg-slate-50 dark:bg-slate-800/50">
                         <div id="output"
                             class="whitespace-pre-wrap text-[15px] leading-relaxed font-mono text-slate-800 dark:text-slate-200">
                         </div>
@@ -1049,6 +1054,71 @@
                     saveBtn.innerHTML = '<span class="mr-2">💾</span> DBに保存';
                     saveBtn.classList.remove('bg-green-600', 'border-green-400');
                 }, 2000);
+            });
+
+            // ===== PDF出力機能 =====
+            var pdfBtn = document.getElementById('pdf-btn');
+            pdfBtn.addEventListener('click', function () {
+                if (pdfBtn.disabled) return;
+
+                var outputText = document.getElementById('output').innerText;
+                if (!outputText || outputText.includes('解析中')) {
+                    showToast('⚠️ 出力するレポートがありません', 'error');
+                    return;
+                }
+
+                // ボタン無効化
+                pdfBtn.disabled = true;
+                pdfBtn.innerHTML = '<span class="mr-1">⏳</span> 生成中...';
+                pdfBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+                // PDF用コンテンツを作成（ヘッダー付き）
+                var today = new Date();
+                var dateStr = today.getFullYear() +
+                    ('0' + (today.getMonth() + 1)).slice(-2) +
+                    ('0' + today.getDate()).slice(-2);
+                var filename = 'Strategy_Report_' + dateStr + '.pdf';
+
+                // PDF用のラッパーを作成
+                var pdfWrapper = document.createElement('div');
+                pdfWrapper.style.cssText = 'padding: 20px; font-family: "Noto Sans JP", sans-serif; background: white; color: #1e293b;';
+                pdfWrapper.innerHTML =
+                    '<div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 15px;">' +
+                    '<p style="font-size: 10px; color: #94a3b8; letter-spacing: 2px; margin-bottom: 5px;">CONFIDENTIAL</p>' +
+                    '<h1 style="font-size: 18px; font-weight: bold; color: #1e293b; margin: 0;">MFG Base AI Report</h1>' +
+                    '<p style="font-size: 11px; color: #64748b; margin-top: 5px;">Generated: ' + today.toLocaleString('ja-JP') + '</p>' +
+                    '</div>' +
+                    '<div style="white-space: pre-wrap; font-size: 12px; line-height: 1.8; font-family: monospace;">' +
+                    outputText.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+                    '</div>' +
+                    '<div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e2e8f0; text-align: center;">' +
+                    '<p style="font-size: 9px; color: #94a3b8;">Powered by SOLVAN Inc. | MFG Base AI Sales Director</p>' +
+                    '</div>';
+
+                document.body.appendChild(pdfWrapper);
+
+                var opt = {
+                    margin: 10,
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(pdfWrapper).save().then(function () {
+                    document.body.removeChild(pdfWrapper);
+                    pdfBtn.innerHTML = '<span class="mr-1">📄</span> PDF出力';
+                    pdfBtn.disabled = false;
+                    pdfBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    showToast('✅ PDFをダウンロードしました', 'success');
+                }).catch(function (err) {
+                    document.body.removeChild(pdfWrapper);
+                    pdfBtn.innerHTML = '<span class="mr-1">📄</span> PDF出力';
+                    pdfBtn.disabled = false;
+                    pdfBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    showToast('⚠️ PDF生成に失敗しました', 'error');
+                    console.error('PDF Error:', err);
+                });
             });
 
             // ===== 音声入力 (Web Speech API) =====
