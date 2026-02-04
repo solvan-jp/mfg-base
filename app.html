@@ -188,21 +188,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div
                         class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
-                        <div
-                            class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-blue-600">
-                            <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.35 0 .81.48 1.55 2.56 2.12 2.08.56 4.48 1.68 4.48 3.61 0 1.84-1.27 2.88-3.31 3.24z" />
-                            </svg>
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">今月の売上着地見込</p>
+                                <p class="text-3xl font-extrabold text-slate-800 mt-1">¥12,400,000</p>
+                                <div class="flex items-center mt-1 text-sm font-bold text-green-600">
+                                    <span>▲ 達成率 85%</span>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">今月の売上着地見込</p>
-                        <p class="text-3xl font-extrabold text-slate-800 mt-2">¥12,400,000</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-green-600">
-                            <span>▲ 達成率 85%</span>
-                            <span class="text-slate-400 font-normal ml-2">あと ¥2.1M</span>
-                        </div>
-                        <div class="w-full bg-slate-100 h-1.5 mt-4 rounded-full overflow-hidden">
-                            <div class="bg-blue-600 h-full" style="width: 85%"></div>
+                        <!-- スパークライン（過去6ヶ月推移） -->
+                        <div class="h-16 w-full mt-2">
+                            <canvas id="salesSparkline"></canvas>
                         </div>
                     </div>
 
@@ -241,27 +238,42 @@
                 </div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- 売上推移 折れ線グラフ -->
+                    <!-- 失注・難航理由のAI分析 -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
                         <h3 class="font-bold text-slate-700 mb-4 flex items-center">
-                            <span class="bg-slate-100 p-1.5 rounded mr-2">�</span>
-                            売上推移（過去6ヶ月）
+                            <span class="bg-slate-100 p-1.5 rounded mr-2">📉</span>
+                            失注・難航理由のAI分析
                         </h3>
-                        <div class="relative h-64">
-                            <canvas id="salesChart"></canvas>
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-6 h-64">
+                            <div class="h-full w-full md:w-1/2 relative flex-shrink-0">
+                                <canvas id="lostReasonsChart"></canvas>
+                            </div>
+                            <div class="text-sm space-y-3 w-full md:w-1/2">
+                                <div class="p-3 bg-indigo-50 rounded-lg border border-indigo-100">
+                                    <p class="font-bold text-indigo-600 text-sm">📌 45% 技術継承不安</p>
+                                    <p class="text-xs text-slate-500 mt-1">→ 動画マニュアル機能を提案せよ</p>
+                                </div>
+                                <div class="p-3 bg-blue-50 rounded-lg border border-blue-100">
+                                    <p class="font-bold text-blue-600 text-sm">💰 30% 価格競争</p>
+                                    <p class="text-xs text-slate-500 mt-1">→ 競合比較シートを用意</p>
+                                </div>
+                                <div class="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                    <p class="font-bold text-slate-600 text-sm">📋 25% その他</p>
+                                    <p class="text-xs text-slate-500 mt-1">→ 納期・仕様確認</p>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <!-- 失注理由 ドーナツグラフ -->
+                    <!-- 売上推移 折れ線グラフ -->
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
                         <h3 class="font-bold text-slate-700 mb-4 flex items-center">
-                            <span class="bg-slate-100 p-1.5 rounded mr-2">📉</span>
-                            失注・難航理由
+                            <span class="bg-slate-100 p-1.5 rounded mr-2">�</span>
+                            売上推移（6ヶ月）
                         </h3>
                         <div class="relative h-52">
-                            <canvas id="lostReasonsChart"></canvas>
+                            <canvas id="salesChart"></canvas>
                         </div>
-                        <p class="text-xs text-slate-400 mt-3 text-center">※ホバーで詳細表示</p>
                     </div>
                 </div>
 
@@ -601,11 +613,44 @@
             initCharts();
 
             function initCharts() {
+                // スパークライン（売上推移ミニグラフ）
+                var sparkCtx = document.getElementById('salesSparkline');
+                if (sparkCtx) {
+                    new Chart(sparkCtx, {
+                        type: 'line',
+                        data: {
+                            labels: ['9月', '10月', '11月', '12月', '1月', '2月'],
+                            datasets: [{
+                                data: [8.5, 9.2, 8.8, 10.5, 11.2, 12.4],
+                                borderColor: '#2563eb',
+                                backgroundColor: function (context) {
+                                    var ctx = context.chart.ctx;
+                                    var gradient = ctx.createLinearGradient(0, 0, 0, 60);
+                                    gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+                                    gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+                                    return gradient;
+                                },
+                                borderWidth: 2,
+                                fill: true,
+                                tension: 0.4,
+                                pointRadius: 0
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                            scales: { x: { display: false }, y: { display: false, min: 5 } },
+                            animation: { duration: 1000 }
+                        }
+                    });
+                }
+
                 // 売上推移 折れ線グラフ
                 var salesCtx = document.getElementById('salesChart');
                 if (salesCtx) {
                     var ctx = salesCtx.getContext('2d');
-                    var gradient = ctx.createLinearGradient(0, 0, 0, 250);
+                    var gradient = ctx.createLinearGradient(0, 0, 0, 200);
                     gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
                     gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
 
@@ -623,8 +668,8 @@
                                 pointBackgroundColor: 'rgb(59, 130, 246)',
                                 pointBorderColor: '#fff',
                                 pointBorderWidth: 2,
-                                pointRadius: 5,
-                                pointHoverRadius: 7
+                                pointRadius: 4,
+                                pointHoverRadius: 6
                             }]
                         },
                         options: {
@@ -653,55 +698,46 @@
                                     grid: { color: 'rgba(148, 163, 184, 0.1)' },
                                     ticks: {
                                         color: '#64748b',
+                                        font: { size: 10 },
                                         callback: function (value) { return '¥' + value; }
                                     }
                                 },
                                 x: {
                                     grid: { display: false },
-                                    ticks: { color: '#64748b' }
+                                    ticks: { color: '#64748b', font: { size: 10 } }
                                 }
                             }
                         }
                     });
                 }
 
-                // 失注理由 ドーナツグラフ
+                // 失注理由 ドーナツグラフ（凡例なし）
                 var lostCtx = document.getElementById('lostReasonsChart');
                 if (lostCtx) {
                     new Chart(lostCtx, {
                         type: 'doughnut',
                         data: {
-                            labels: ['品質懸念', '価格競争', '納期・仕様', '競合優位'],
+                            labels: ['技術継承不安', '価格競争', 'その他'],
                             datasets: [{
-                                data: [45, 30, 15, 10],
+                                data: [45, 30, 25],
                                 backgroundColor: [
                                     'rgb(99, 102, 241)',   // Indigo
                                     'rgb(59, 130, 246)',   // Blue
-                                    'rgb(100, 116, 139)',  // Slate
-                                    'rgb(20, 184, 166)'    // Teal
+                                    'rgb(148, 163, 184)'   // Slate
                                 ],
                                 borderWidth: 0,
-                                hoverOffset: 8
+                                hoverOffset: 10
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            cutout: '65%',
+                            cutout: '70%',
                             animation: { duration: 1200, easing: 'easeOutQuart' },
                             plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        color: '#64748b',
-                                        font: { size: 11 },
-                                        padding: 12,
-                                        usePointStyle: true,
-                                        pointStyle: 'circle'
-                                    }
-                                },
+                                legend: { display: false },
                                 tooltip: {
-                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    backgroundColor: 'rgba(30, 41, 59, 0.95)',
                                     titleColor: '#fff',
                                     bodyColor: '#94a3b8',
                                     padding: 12,
