@@ -12,8 +12,10 @@
         rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
@@ -75,10 +77,29 @@
                 box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
             }
         }
+
+        /* シニアモード（文字サイズ大） */
+        body.text-large {
+            font-size: 110%;
+        }
+
+        body.text-large h2 {
+            font-size: 1.75rem;
+        }
+
+        body.text-large p,
+        body.text-large span {
+            line-height: 1.8;
+        }
+
+        body.text-large textarea {
+            font-size: 1.1rem;
+        }
     </style>
 </head>
 
-<body class="font-sans bg-slate-50 text-slate-800 overflow-hidden">
+<body
+    class="font-sans bg-slate-50 text-slate-800 overflow-hidden transition-colors duration-300 dark:bg-slate-900 dark:text-slate-100">
     <div class="flex h-screen relative">
 
         <div id="sidebar-overlay" onclick="toggleSidebar()"
@@ -102,6 +123,17 @@
                 <p class="text-[11px] font-semibold text-blue-200 tracking-wider">AI Sales Director</p>
             </div>
 
+            <!-- ユーザープロファイル -->
+            <div class="px-6 py-4 flex items-center gap-3 border-b border-slate-800/50">
+                <div
+                    class="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-600 flex items-center justify-center text-sm font-bold shadow-lg">
+                    山</div>
+                <div>
+                    <p id="sidebar-username" class="text-sm font-bold text-white">山田 太郎</p>
+                    <p id="sidebar-role" class="text-[10px] text-slate-400">営業部長</p>
+                </div>
+            </div>
+
             <nav class="p-4 space-y-2">
                 <button onclick="switchTab('dashboard'); toggleSidebarIfMobile()" id="nav-dashboard"
                     class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all bg-blue-600 text-white shadow-lg shadow-blue-900/20">
@@ -112,6 +144,11 @@
                     class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
                     <span class="text-lg mr-3">📝</span>
                     <span class="font-bold text-sm">AI戦略日報入力</span>
+                </button>
+                <button onclick="switchTab('settings'); toggleSidebarIfMobile()" id="nav-settings"
+                    class="w-full text-left px-4 py-3 rounded-xl flex items-center transition-all text-slate-400 hover:bg-slate-800 hover:text-white">
+                    <span class="text-lg mr-3">⚙️</span>
+                    <span class="font-bold text-sm">設定・カスタマイズ</span>
                 </button>
             </nav>
 
@@ -131,32 +168,21 @@
             </div>
 
             <div class="p-4 border-t border-slate-800 bg-slate-950/30 flex-shrink-0">
-                <div class="flex items-center gap-3 mb-4">
-                    <div
-                        class="w-9 h-9 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-xs font-bold shadow-lg shadow-blue-500/30 ring-2 ring-blue-400/20">
-                        HY</div>
-                    <div>
-                        <p class="text-xs font-bold text-white">Haruki Yamana</p>
-                        <p class="text-[10px] text-slate-400">Administrator</p>
-                    </div>
-                </div>
-                <button onclick="showDemoAlert('設定')"
-                    class="text-xs text-slate-500 hover:text-blue-400 w-full text-left flex items-center transition mb-2">
-                    <span class="mr-2">⚙️</span> 設定
-                </button>
                 <button onclick="exportData()"
                     class="text-xs text-slate-500 hover:text-blue-400 w-full text-left flex items-center transition mb-2">
                     <span class="mr-2">📤</span> データをエクスポート
                 </button>
                 <button onclick="showDemoAlert('ログアウト')"
                     class="text-xs text-slate-500 hover:text-red-400 w-full text-left flex items-center transition">
-                    <span class="mr-2">�</span> ログアウト
+                    <span class="mr-2">🚪</span> ログアウト
                 </button>
-                <p class="text-[10px] text-slate-700 mt-3 pt-2 border-t border-slate-800">© 2026 SOLVAN Inc.</p>
+                <p class="text-[10px] text-slate-700 mt-3 pt-2 border-t border-slate-800 text-center">© 2026 SOLVAN Inc.
+                </p>
             </div>
         </aside>
 
-        <div class="flex-1 overflow-y-auto bg-slate-100 relative w-full">
+        <div
+            class="flex-1 overflow-y-auto bg-slate-100 dark:bg-slate-900 relative w-full transition-colors duration-300">
             <div class="md:hidden bg-slate-900 text-white p-4 flex items-center sticky top-0 z-20 shadow-md">
                 <button onclick="toggleSidebar()" class="mr-4 text-slate-300 hover:text-white">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,44 +196,45 @@
             </div>
 
             <div
-                class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none">
+                class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] dark:bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:20px_20px] opacity-40 pointer-events-none">
             </div>
 
             <div id="view-dashboard" class="p-8 max-w-6xl mx-auto space-y-6 animate-fade-in relative z-10">
                 <div class="flex justify-between items-end mb-2">
                     <div>
-                        <h2 class="text-2xl font-bold text-slate-800">Executive Dashboard</h2>
-                        <p class="text-sm text-slate-500">2026年2月3日 現在の営業状況概況</p>
+                        <h2 id="dash-title" class="text-2xl font-bold text-slate-800 dark:text-white">Executive
+                            Dashboard</h2>
+                        <p id="dash-subtitle" class="text-sm text-slate-500 dark:text-slate-400">全社営業状況概況サマリー</p>
                     </div>
                     <button
-                        class="bg-white border border-slate-300 text-slate-600 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 transition">
+                        class="bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 px-3 py-1.5 rounded-lg text-xs font-bold shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition">
                         🔄 Updated: Just now
                     </button>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div
-                        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
-                        <div
-                            class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-blue-600">
-                            <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
-                                <path
-                                    d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1.41 16.09V20h-2.67v-1.93c-1.71-.36-3.16-1.46-3.27-3.4h1.96c.1 1.05.82 1.87 2.65 1.87 1.96 0 2.4-.98 2.4-1.59 0-.83-.44-1.61-2.67-2.14-2.48-.6-4.18-1.62-4.18-3.67 0-1.72 1.39-2.84 3.11-3.21V4h2.67v1.95c1.86.45 2.79 1.86 2.85 3.39H14.3c-.05-1.11-.64-1.87-2.22-1.87-1.5 0-2.4.68-2.4 1.35 0 .81.48 1.55 2.56 2.12 2.08.56 4.48 1.68 4.48 3.61 0 1.84-1.27 2.88-3.31 3.24z" />
-                            </svg>
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
+                        <div class="flex justify-between items-start mb-2">
+                            <div>
+                                <p id="kpi-1-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                                    今月の売上着地見込</p>
+                                <p id="kpi-1-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-1">
+                                    ¥12,400,000</p>
+                                <div id="kpi-1-sub"
+                                    class="flex items-center mt-1 text-sm font-bold text-green-600 dark:text-green-400">
+                                    <span>▲ 達成率 85%</span>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">今月の売上着地見込</p>
-                        <p class="text-3xl font-extrabold text-slate-800 mt-2">¥12,400,000</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-green-600">
-                            <span>▲ 達成率 85%</span>
-                            <span class="text-slate-400 font-normal ml-2">あと ¥2.1M</span>
-                        </div>
-                        <div class="w-full bg-slate-100 h-1.5 mt-4 rounded-full overflow-hidden">
-                            <div class="bg-blue-600 h-full" style="width: 85%"></div>
+                        <!-- スパークライン（過去6ヶ月推移） -->
+                        <div class="h-16 w-full mt-2">
+                            <canvas id="salesSparkline"></canvas>
                         </div>
                     </div>
 
                     <div
-                        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
                         <div
                             class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-purple-600">
                             <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
@@ -215,122 +242,200 @@
                                     d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z" />
                             </svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">AI 成約確率 (平均)</p>
-                        <p class="text-3xl font-extrabold text-slate-800 mt-2">64.2%</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-blue-600">
+                        <p id="kpi-2-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">AI 成約確率
+                            (平均)</p>
+                        <p id="kpi-2-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">64.2%
+                        </p>
+                        <div id="kpi-2-sub"
+                            class="flex items-center mt-2 text-sm font-bold text-blue-600 dark:text-blue-400">
                             <span>先月比 +12pt ↑</span>
                         </div>
                         <p class="text-xs text-slate-400 mt-3">MFG Base導入により提案精度が向上中</p>
                     </div>
 
                     <div
-                        class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 relative overflow-hidden group hover:shadow-md transition">
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 relative overflow-hidden group hover:shadow-md transition">
                         <div
                             class="absolute right-0 top-0 p-4 opacity-10 group-hover:opacity-20 transition text-red-600">
                             <svg width="60" height="60" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z" />
                             </svg>
                         </div>
-                        <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">アラート案件</p>
-                        <p class="text-3xl font-extrabold text-slate-800 mt-2">3件</p>
-                        <div class="flex items-center mt-2 text-sm font-bold text-red-500">
+                        <p id="kpi-3-label" class="text-xs font-bold text-slate-400 uppercase tracking-wider">アラート案件</p>
+                        <p id="kpi-3-value" class="text-3xl font-extrabold text-slate-800 dark:text-white mt-2">3件</p>
+                        <div id="kpi-3-sub" class="flex items-center mt-2 text-sm font-bold text-red-500">
                             <span>⚠️ 要注意</span>
                         </div>
                         <p class="text-xs text-slate-400 mt-3">競合との価格乖離・担当者変更など</p>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <!-- 売上推移 折れ線グラフ -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 lg:col-span-2">
-                        <h3 class="font-bold text-slate-700 mb-4 flex items-center">
-                            <span class="bg-slate-100 p-1.5 rounded mr-2">�</span>
-                            売上推移（過去6ヶ月）
+                <!-- Admin Section (Executive Dashboard) -->
+                <div id="admin-section" class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- 失注・難航理由のAI分析 -->
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 lg:col-span-2">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-indigo-100 dark:bg-indigo-900/50 p-1.5 rounded mr-2">📉</span>
+                            失注・難航理由のAI分析
                         </h3>
-                        <div class="relative h-64">
+                        <div class="flex flex-col md:flex-row items-center justify-center gap-6 h-64">
+                            <div class="h-full w-full md:w-1/2 relative flex-shrink-0">
+                                <canvas id="lostReasonsChart"></canvas>
+                            </div>
+                            <div class="text-sm space-y-3 w-full md:w-1/2">
+                                <div
+                                    class="p-3 bg-indigo-50 dark:bg-indigo-900/30 rounded-lg border border-indigo-100 dark:border-indigo-800">
+                                    <p class="font-bold text-indigo-600 dark:text-indigo-400 text-sm">📌 45% 技術継承不安</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">→ 動画マニュアル機能を提案せよ</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800">
+                                    <p class="font-bold text-blue-600 dark:text-blue-400 text-sm">💰 30% 価格競争</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">→ 競合比較シートを用意</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                    <p class="font-bold text-slate-600 dark:text-slate-300 text-sm">📋 25% その他</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">→ 納期・仕様確認</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 売上推移 折れ線グラフ -->
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-slate-100 dark:bg-slate-700 p-1.5 rounded mr-2">📈</span>
+                            売上推移（6ヶ月）
+                        </h3>
+                        <div class="relative h-52">
                             <canvas id="salesChart"></canvas>
                         </div>
                     </div>
 
-                    <!-- 失注理由 ドーナツグラフ -->
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-slate-700 mb-4 flex items-center">
-                            <span class="bg-slate-100 p-1.5 rounded mr-2">📉</span>
-                            失注・難航理由
-                        </h3>
-                        <div class="relative h-52">
-                            <canvas id="lostReasonsChart"></canvas>
+                    <!-- 今週の勝負案件 (Admin & Member共通コンポーネントとして利用も可能だが今回はAdmin専用に配置) -->
+                    <div class="lg:col-span-3 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <div
+                            class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                            <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                                <span class="bg-slate-100 dark:bg-slate-700 p-1.5 rounded mr-2">🔥</span>
+                                今週の勝負案件
+                            </h3>
+                            <div class="space-y-3">
+                                <div
+                                    class="p-3 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-100 dark:border-blue-800 hover:border-blue-300 transition cursor-pointer">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-900/50 px-1.5 py-0.5 rounded">Rank
+                                            S</span>
+                                        <span class="text-xs text-slate-400">明日訪問</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">久留米精密工業</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: コストではなく品質で勝負</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-amber-50 dark:bg-amber-900/30 rounded-lg border border-amber-100 dark:border-amber-800 hover:border-amber-300 transition cursor-pointer">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-900/50 px-1.5 py-0.5 rounded">Rank
+                                            A</span>
+                                        <span class="text-xs text-slate-400">水曜連絡</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">山田精密工業</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: 競合対策シート持参</p>
+                                </div>
+                                <div
+                                    class="p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600 hover:border-slate-300 transition cursor-pointer opacity-70">
+                                    <div class="flex justify-between items-start">
+                                        <span
+                                            class="text-xs font-bold text-slate-500 bg-slate-200 dark:bg-slate-600 px-1.5 py-0.5 rounded">Rank
+                                            B</span>
+                                        <span class="text-xs text-slate-400">木曜連絡</span>
+                                    </div>
+                                    <p class="font-bold text-sm mt-1 text-slate-800 dark:text-slate-200">博多食品加工</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">戦略: 技術継承のデータ化提案</p>
+                                </div>
+                            </div>
                         </div>
-                        <p class="text-xs text-slate-400 mt-3 text-center">※ホバーで詳細表示</p>
                     </div>
                 </div>
 
-                <!-- 今週の勝負案件 -->
-                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                        <h3 class="font-bold text-slate-700 mb-4 flex items-center">
-                            <span class="bg-slate-100 p-1.5 rounded mr-2">🔥</span>
-                            今週の勝負案件
+                <!-- Member Section (Sales Member) -->
+                <div id="member-section" class="hidden grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-green-100 dark:bg-green-900/50 p-1.5 rounded mr-2">✅</span>
+                            今日のToDo (Member)
                         </h3>
-                        <div class="space-y-3">
-                            <div
-                                class="p-3 bg-blue-50 rounded-lg border border-blue-100 hover:border-blue-300 transition cursor-pointer">
-                                <div class="flex justify-between items-start">
-                                    <span class="text-xs font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded">Rank
-                                        S</span>
-                                    <span class="text-xs text-slate-400">明日訪問</span>
+                        <ul class="space-y-3">
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">14:00 久留米精密 訪問</span>
+                            </li>
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">16:00 博多食品
+                                    見積送付</span>
+                            </li>
+                            <li class="flex items-center p-3 bg-slate-50 dark:bg-slate-700/50 rounded-lg">
+                                <input type="checkbox" class="mr-3 h-5 w-5 text-blue-600 rounded focus:ring-blue-500">
+                                <span class="text-sm font-bold text-slate-700 dark:text-slate-200">日報入力 (MFG
+                                    Base)</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div
+                        class="bg-white dark:bg-slate-800 p-6 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700">
+                        <h3 class="font-bold text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                            <span class="bg-blue-100 dark:bg-blue-900/50 p-1.5 rounded mr-2">📊</span>
+                            個人ノルマ達成状況
+                        </h3>
+                        <div class="relative pt-1">
+                            <div class="flex mb-2 items-center justify-between">
+                                <div><span
+                                        class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">進行中</span>
                                 </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800">久留米精密工業</p>
-                                <p class="text-xs text-slate-500 mt-1">戦略: コストではなく品質で勝負</p>
+                                <div class="text-right"><span
+                                        class="text-xs font-semibold inline-block text-blue-600">70%</span></div>
                             </div>
-                            <div
-                                class="p-3 bg-amber-50 rounded-lg border border-amber-100 hover:border-amber-300 transition cursor-pointer">
-                                <div class="flex justify-between items-start">
-                                    <span
-                                        class="text-xs font-bold text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded">Rank
-                                        A</span>
-                                    <span class="text-xs text-slate-400">水曜連絡</span>
+                            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                                <div style="width:70%"
+                                    class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500">
                                 </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800">山田精密工業</p>
-                                <p class="text-xs text-slate-500 mt-1">戦略: 競合対策シート持参</p>
                             </div>
-                            <div
-                                class="p-3 bg-slate-50 rounded-lg border border-slate-200 hover:border-slate-300 transition cursor-pointer opacity-70">
-                                <div class="flex justify-between items-start">
-                                    <span
-                                        class="text-xs font-bold text-slate-500 bg-slate-200 px-1.5 py-0.5 rounded">Rank
-                                        B</span>
-                                    <span class="text-xs text-slate-400">木曜連絡</span>
-                                </div>
-                                <p class="font-bold text-sm mt-1 text-slate-800">博多食品加工</p>
-                                <p class="text-xs text-slate-500 mt-1">戦略: 技術継承のデータ化提案</p>
-                            </div>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">今月の目標まであと ¥600,000</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div id="view-report" class="p-8 max-w-4xl mx-auto hidden animate-fade-in relative z-10">
-                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-8">
-                    <div class="bg-slate-50 border-b border-slate-200 px-6 py-4 flex items-center justify-between">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mb-8">
+                    <div
+                        class="bg-slate-50 dark:bg-slate-900/50 border-b border-slate-200 dark:border-slate-700 px-6 py-4 flex items-center justify-between">
                         <div class="flex items-center">
                             <span class="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded mr-3">INPUT</span>
-                            <h2 class="text-base font-bold text-slate-800">商談メモを入力</h2>
+                            <h2 class="text-base font-bold text-slate-800 dark:text-white">商談メモを入力</h2>
                         </div>
-                        <span class="text-xs text-slate-400 font-mono bg-slate-100 px-2 py-1 rounded">Mode:
+                        <span
+                            class="text-xs text-slate-400 font-mono bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded">Mode:
                             Demo</span>
                     </div>
                     <div class="p-6">
                         <div class="relative">
                             <textarea id="raw-notes"
-                                class="w-full h-40 p-4 pr-14 border border-slate-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none text-slate-700 bg-slate-50 focus:bg-white"
+                                class="w-full h-40 p-4 pr-14 border border-slate-300 dark:border-slate-600 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition resize-none text-slate-700 dark:text-slate-200 bg-slate-50 dark:bg-slate-700 focus:bg-white dark:focus:bg-slate-800"
                                 placeholder="ここに商談の雑多なメモを入力してください...
 
 例：
 久留米の〇〇鉄工所。社長と面談。人手不足で納期遅れが起きているらしい。AIでの自動見積もりに興味ありそう。"></textarea>
 
                             <button id="voice-btn" type="button"
-                                class="absolute right-3 bottom-3 w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-500 flex items-center justify-center transition cursor-pointer"
+                                class="absolute right-3 bottom-3 w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-600 hover:bg-slate-300 dark:hover:bg-slate-500 text-slate-500 dark:text-slate-300 flex items-center justify-center transition cursor-pointer"
                                 title="音声入力">
                                 <svg id="mic-icon" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                                     <path
@@ -357,7 +462,7 @@
                 </div>
 
                 <div id="result-area"
-                    class="bg-white rounded-2xl shadow-xl border border-blue-100 overflow-hidden hidden ring-4 ring-blue-500/10">
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-blue-100 dark:border-slate-700 overflow-hidden hidden ring-4 ring-blue-500/10">
                     <div
                         class="bg-gradient-to-r from-slate-800 to-slate-900 px-6 py-4 flex justify-between items-center">
                         <h2 class="text-base font-bold text-white flex items-center">
@@ -368,23 +473,146 @@
                                 class="bg-slate-700 hover:bg-slate-600 text-white px-3 py-2 rounded-lg text-xs font-medium transition flex items-center cursor-pointer">
                                 📋 コピー
                             </button>
+                            <button id="pdf-btn"
+                                class="bg-red-600 hover:bg-red-500 text-white px-3 py-2 rounded-lg text-xs font-bold transition flex items-center cursor-pointer">
+                                <span class="mr-1">📄</span> PDF出力
+                            </button>
                             <button id="save-btn"
                                 class="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-md flex items-center border border-blue-400/50 transition active:scale-95 cursor-pointer">
                                 <span class="mr-2">💾</span> DBに保存
                             </button>
                         </div>
                     </div>
-                    <div class="p-8 bg-slate-50">
+                    <div id="pdf-content" class="p-8 bg-slate-50 dark:bg-slate-800/50">
                         <div id="output"
-                            class="whitespace-pre-wrap text-[15px] leading-relaxed font-mono text-slate-800">
+                            class="whitespace-pre-wrap text-[15px] leading-relaxed font-mono text-slate-800 dark:text-slate-200">
                         </div>
                     </div>
-                    <div class="px-6 py-3 bg-slate-100 border-t border-slate-200 flex justify-end">
+                    <div
+                        class="px-6 py-3 bg-slate-100 dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 flex justify-end">
                         <button id="regenerate-btn"
                             class="text-xs text-slate-500 hover:text-blue-600 transition flex items-center gap-1 cursor-pointer">
                             🔄 再生成する
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- 設定画面 -->
+            <div id="view-settings" class="p-8 max-w-3xl mx-auto hidden animate-fade-in relative z-10">
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-6">⚙️ 設定・カスタマイズ</h2>
+
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6 mb-6">
+                    <h3 class="font-bold text-lg text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                        <span
+                            class="bg-blue-100 dark:bg-blue-900/50 text-blue-600 dark:text-blue-400 p-1.5 rounded mr-2 text-sm">👁️</span>
+                        表示設定 (アクセシビリティ)
+                    </h3>
+
+                    <div class="space-y-6">
+                        <!-- 権限選択 (RBAC) -->
+                        <div>
+                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">ユーザー権限 (RBAC)</p>
+                            <div class="flex gap-4">
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="userRole" value="admin" class="mr-3 accent-blue-600"
+                                        checked onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">👑 管理者
+                                            (Administrator)</span>
+                                        <span class="text-xs text-slate-400">全社データ閲覧可</span>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="userRole" value="member" class="mr-3 accent-blue-600"
+                                        onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">🏃 現場メンバー
+                                            (Member)</span>
+                                        <span class="text-xs text-slate-400">個人データのみ</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">文字サイズ</p>
+                            <div class="flex gap-4">
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="textSize" value="normal" class="mr-3 accent-blue-600"
+                                        checked onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">標準</span>
+                                        <span class="text-xs text-slate-400">デフォルトのサイズ</span>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="textSize" value="large" class="mr-3 accent-blue-600"
+                                        onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-lg text-slate-700 dark:text-slate-200">大
+                                            (シニア)</span>
+                                        <span class="text-xs text-slate-400">文字を大きく表示</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div>
+                            <p class="text-sm font-bold text-slate-600 dark:text-slate-400 mb-2">画面テーマ</p>
+                            <div class="flex gap-4">
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="themeMode" value="light" class="mr-3 accent-blue-600"
+                                        checked onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">☀️
+                                            ライトモード</span>
+                                        <span class="text-xs text-slate-400">明るいオフィス向け</span>
+                                    </div>
+                                </label>
+                                <label
+                                    class="flex items-center cursor-pointer p-3 border border-slate-200 dark:border-slate-600 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 w-1/2 transition">
+                                    <input type="radio" name="themeMode" value="dark" class="mr-3 accent-blue-600"
+                                        onchange="updateSettings()">
+                                    <div>
+                                        <span class="block font-bold text-slate-700 dark:text-slate-200">🌙
+                                            ダークモード</span>
+                                        <span class="text-xs text-slate-400">目に優しい・夜間向け</span>
+                                    </div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-700 p-6">
+                    <h3 class="font-bold text-lg text-slate-700 dark:text-slate-200 mb-4 flex items-center">
+                        <span
+                            class="bg-green-100 dark:bg-green-900/50 text-green-600 dark:text-green-400 p-1.5 rounded mr-2 text-sm">👤</span>
+                        ユーザー情報
+                    </h3>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">お名前</label>
+                            <input type="text" id="setting-username" value="山田 太郎"
+                                class="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
+                                oninput="updateProfile()">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">役職</label>
+                            <input type="text" id="setting-role" value="営業部長"
+                                class="w-full p-2.5 border border-slate-300 dark:border-slate-600 rounded-lg bg-slate-50 dark:bg-slate-700 text-slate-800 dark:text-white focus:ring-2 focus:ring-blue-500 transition"
+                                oninput="updateProfile()">
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-400 mt-3">※ 変更は自動的に保存されます</p>
                 </div>
             </div>
 
@@ -424,26 +652,24 @@
 
         // ===== タブ切り替え =====
         window.switchTab = function (tabName) {
-            var dashboard = document.getElementById('view-dashboard');
-            var report = document.getElementById('view-report');
-            var navDash = document.getElementById('nav-dashboard');
-            var navRep = document.getElementById('nav-report');
-
-            if (tabName === 'dashboard') {
-                dashboard.classList.remove('hidden');
-                report.classList.add('hidden');
-                navDash.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-                navDash.classList.remove('text-slate-400', 'hover:bg-slate-800');
-                navRep.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-                navRep.classList.add('text-slate-400', 'hover:bg-slate-800');
-            } else {
-                dashboard.classList.add('hidden');
-                report.classList.remove('hidden');
-                navRep.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
-                navRep.classList.remove('text-slate-400', 'hover:bg-slate-800');
-                navDash.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
-                navDash.classList.add('text-slate-400', 'hover:bg-slate-800');
-            }
+            var views = ['dashboard', 'report', 'settings'];
+            views.forEach(function (v) {
+                var view = document.getElementById('view-' + v);
+                var nav = document.getElementById('nav-' + v);
+                if (v === tabName) {
+                    if (view) view.classList.remove('hidden');
+                    if (nav) {
+                        nav.classList.add('bg-blue-600', 'text-white', 'shadow-lg');
+                        nav.classList.remove('text-slate-400', 'hover:bg-slate-800');
+                    }
+                } else {
+                    if (view) view.classList.add('hidden');
+                    if (nav) {
+                        nav.classList.remove('bg-blue-600', 'text-white', 'shadow-lg');
+                        nav.classList.add('text-slate-400', 'hover:bg-slate-800');
+                    }
+                }
+            });
         };
 
         // ===== Toast =====
@@ -458,6 +684,239 @@
             toast.classList.remove('translate-y-20');
             setTimeout(function () { toast.classList.add('translate-y-20'); }, 3000);
         }
+
+        // ===== グローバル変数 =====
+        let mainChart = null;
+
+        // ===== 設定管理 =====
+        window.updateSettings = function () {
+            // 文字サイズ
+            var sizeRadio = document.querySelector('input[name="textSize"]:checked');
+            var size = sizeRadio ? sizeRadio.value : 'normal';
+            if (size === 'large') {
+                document.body.classList.add('text-large');
+            } else {
+                document.body.classList.remove('text-large');
+            }
+
+            // テーマ (Tailwind Dark Mode)
+            var themeRadio = document.querySelector('input[name="themeMode"]:checked');
+            var theme = themeRadio ? themeRadio.value : 'light';
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+
+            // 権限 (RBAC)
+            var roleRadio = document.querySelector('input[name="userRole"]:checked');
+            var role = roleRadio ? roleRadio.value : 'admin';
+            applyRole(role);
+
+            // 保存
+            var settings = { size: size, theme: theme, role: role };
+            localStorage.setItem('mfg_base_settings', JSON.stringify(settings));
+            // showToast('設定を保存しました', 'success'); // 頻繁に出るとうるさいので非表示
+        };
+
+        // 権限による表示切り替え
+        function applyRole(role) {
+            const adminSec = document.getElementById('admin-section');
+            const memberSec = document.getElementById('member-section');
+            const sidebarRole = document.getElementById('sidebar-role');
+            const dashTitle = document.getElementById('dash-title');
+            const dashSub = document.getElementById('dash-subtitle');
+
+            // KPI要素
+            const k1l = document.getElementById('kpi-1-label'), k1v = document.getElementById('kpi-1-value'), k1s = document.getElementById('kpi-1-sub');
+            const k2l = document.getElementById('kpi-2-label'), k2v = document.getElementById('kpi-2-value'), k2s = document.getElementById('kpi-2-sub');
+            const k3l = document.getElementById('kpi-3-label'), k3v = document.getElementById('kpi-3-value'), k3s = document.getElementById('kpi-3-sub');
+
+            if (role === 'admin') {
+                // Admin Mode
+                if (adminSec) adminSec.classList.remove('hidden');
+                if (memberSec) memberSec.classList.add('hidden');
+                if (sidebarRole) sidebarRole.textContent = 'Administrator';
+                if (dashTitle) dashTitle.textContent = 'Executive Dashboard';
+                if (dashSub) dashSub.textContent = '全社営業状況概況サマリー';
+
+                if (k1l) k1l.textContent = '今月の売上着地見込';
+                if (k1v) k1v.textContent = '¥12,400,000';
+                if (k1s) {
+                    k1s.innerHTML = '<span>▲ 達成率 85%</span>';
+                    k1s.className = 'flex items-center mt-1 text-sm font-bold text-green-600 dark:text-green-400';
+                }
+
+                if (k2l) k2l.textContent = 'AI 成約確率 (平均)';
+                if (k2v) k2v.textContent = '64.2%';
+                if (k2s) {
+                    k2s.innerHTML = '<span>先月比 +12pt ↑</span>';
+                    k2s.className = 'flex items-center mt-2 text-sm font-bold text-blue-600 dark:text-blue-400';
+                }
+
+                if (k3l) k3l.textContent = 'アラート案件';
+                if (k3v) k3v.textContent = '3件';
+                if (k3s) {
+                    k3s.innerHTML = '<span>⚠️ 要注意</span>';
+                    k3s.className = 'flex items-center mt-2 text-sm font-bold text-red-500';
+                }
+
+                renderChart([8.5, 9.2, 8.8, 10.5, 11.2, 12.4]); // 全社データ（ダミー）
+                showToast('管理者モードに切り替えました', 'success');
+
+            } else {
+                // Member Mode
+                if (adminSec) adminSec.classList.add('hidden');
+                if (memberSec) memberSec.classList.remove('hidden');
+                if (sidebarRole) sidebarRole.textContent = 'Sales Member';
+                if (dashTitle) dashTitle.textContent = 'My Performance';
+                if (dashSub) dashSub.textContent = '個人の活動状況と目標';
+
+                if (k1l) k1l.textContent = '個人売上 (達成率)';
+                if (k1v) k1v.textContent = '¥1,400,000 (70%)';
+                if (k1s) {
+                    k1s.innerHTML = '<span>あと ¥600k で目標</span>';
+                    k1s.className = 'flex items-center mt-1 text-sm font-bold text-slate-500 dark:text-slate-400';
+                }
+
+                if (k2l) k2l.textContent = '今月の訪問予定';
+                if (k2v) k2v.textContent = '12件';
+                if (k2s) {
+                    k2s.innerHTML = '<span>完了: 4件 / 残り: 8件</span>';
+                    k2s.className = 'flex items-center mt-2 text-sm font-bold text-slate-500 dark:text-slate-400';
+                }
+
+                if (k3l) k3l.textContent = '提案中案件';
+                if (k3v) k3v.textContent = '5件';
+                if (k3s) {
+                    k3s.innerHTML = '<span>Sランク: 1件 / Aランク: 2件</span>';
+                    k3s.className = 'flex items-center mt-2 text-sm font-bold text-blue-500';
+                }
+
+                renderChart([1.0, 1.2, 1.1, 1.5, 1.3, 1.4]); // 個人データ（ダミー）
+                showToast('メンバーモードに切り替えました', 'success');
+            }
+        }
+
+        // メインチャート描画更新
+        function renderChart(data) {
+            const ctx = document.getElementById('salesSparkline');
+            // ※以前のコードで salesSparkline というIDで初期化されていたのでそれを使う
+            // もしIDが違う場合は適宜修正が必要だが、既存コードではinitChartsでnew Chartしている
+            // ここでは既存のチャートインスタンスがあれば破棄して再描画する戦略をとる必要があるが
+            // initChartsで作成されたインスタンスを変数保持していないため、canvasを再取得して作り直す
+
+            // 既存のチャートがあれば破壊するためのグローバル管理が必要だが、
+            // 簡易的に chart.js の getChart を使うか、canvasを再生成する
+
+            const chartStatus = Chart.getChart("salesSparkline"); // <canvas> id
+            if (chartStatus != undefined) {
+                chartStatus.destroy();
+            }
+
+            if (ctx) {
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: ['9月', '10月', '11月', '12月', '1月', '2月'],
+                        datasets: [{
+                            data: data,
+                            borderColor: '#2563eb',
+                            backgroundColor: function (context) {
+                                var ctx = context.chart.ctx;
+                                var gradient = ctx.createLinearGradient(0, 0, 0, 60);
+                                gradient.addColorStop(0, 'rgba(37, 99, 235, 0.25)');
+                                gradient.addColorStop(1, 'rgba(37, 99, 235, 0)');
+                                return gradient;
+                            },
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.4,
+                            pointRadius: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                        scales: { x: { display: false }, y: { display: false, min: 0 } }, // min:0に変更
+                        animation: { duration: 1000 }
+                    }
+                });
+            }
+        }
+
+        window.updateProfile = function () {
+            var nameInput = document.getElementById('setting-username');
+            var roleInput = document.getElementById('setting-role');
+            var name = nameInput ? nameInput.value : '山田 太郎';
+            var role = roleInput ? roleInput.value : '営業部長';
+
+            var sidebarName = document.getElementById('sidebar-username');
+            var sidebarRole = document.getElementById('sidebar-role');
+            if (sidebarName) sidebarName.textContent = name;
+
+            // 管理者の場合のみ役職名を表示反映（メンバーの場合は固定）
+            var roleRadio = document.querySelector('input[name="userRole"]:checked');
+            if (roleRadio && roleRadio.value === 'admin' && sidebarRole) {
+                sidebarRole.textContent = role;
+            }
+
+            localStorage.setItem('mfg_base_profile', JSON.stringify({ name: name, role: role }));
+        };
+
+        function loadSettings() {
+            // 設定ロード
+            try {
+                var savedSettings = localStorage.getItem('mfg_base_settings');
+                var s = savedSettings ? JSON.parse(savedSettings) : { size: 'normal', theme: 'light', role: 'admin' };
+
+                var sizeRadio = document.querySelector('input[name="textSize"][value="' + s.size + '"]');
+                if (sizeRadio) sizeRadio.checked = true;
+
+                var themeRadio = document.querySelector('input[name="themeMode"][value="' + s.theme + '"]');
+                if (themeRadio) themeRadio.checked = true;
+
+                // 権限ロード
+                var roleRadio = document.querySelector('input[name="userRole"][value="' + (s.role || 'admin') + '"]');
+                if (roleRadio) roleRadio.checked = true;
+
+                // 設定適用
+                if (s.size === 'large') document.body.classList.add('text-large');
+                if (s.theme === 'dark') document.documentElement.classList.add('dark');
+
+                // 権限適用 (初回ロード時はトースト出さないようにフラグ管理したいが、簡易的にそのまま呼ぶ)
+                // ただしapplyRole内でトーストを出しているので、初回ロード時は出したくない場合はロジック調整が必要
+                // ここではシンプルに呼び出す
+                applyRole(s.role || 'admin');
+
+            } catch (e) {
+                console.log('Settings load error:', e);
+            }
+
+            // プロフィールロード
+            try {
+                var savedProfile = localStorage.getItem('mfg_base_profile');
+                var p = savedProfile ? JSON.parse(savedProfile) : { name: '山田 太郎', role: '営業部長' };
+
+                var usernameInput = document.getElementById('setting-username');
+                var roleInput = document.getElementById('setting-role');
+                if (usernameInput) usernameInput.value = p.name;
+                if (roleInput) roleInput.value = p.role || '営業部長';
+
+                var sidebarName = document.getElementById('sidebar-username');
+                var sidebarRole = document.getElementById('sidebar-role');
+                if (sidebarName) sidebarName.textContent = p.name;
+
+                // roleの反映はapplyRoleに任せるが、adminの場合はここでも反映可
+                // ただしapplyRoleが後で呼ばれるので、基本的にはそちらで上書きされる
+                // ここではinputの初期値設定が主目的
+            } catch (e) {
+                console.log('Profile load error:', e);
+            }
+        }
+
+
 
         // ===== デモ戦略生成（4パターン分岐） =====
         function generateDemoStrategy(notes) {
@@ -597,15 +1056,22 @@
             // 初期化時に履歴をロード
             loadHistoryList();
 
+            // 設定をロード
+            loadSettings();
+
             // ===== Chart.js グラフ初期化 =====
             initCharts();
 
             function initCharts() {
+                // スパークライン（売上推移ミニグラフ）
+                // → renderChart() で初期化するためここではスキップ
+
+
                 // 売上推移 折れ線グラフ
                 var salesCtx = document.getElementById('salesChart');
                 if (salesCtx) {
                     var ctx = salesCtx.getContext('2d');
-                    var gradient = ctx.createLinearGradient(0, 0, 0, 250);
+                    var gradient = ctx.createLinearGradient(0, 0, 0, 200);
                     gradient.addColorStop(0, 'rgba(59, 130, 246, 0.3)');
                     gradient.addColorStop(1, 'rgba(59, 130, 246, 0.0)');
 
@@ -623,8 +1089,8 @@
                                 pointBackgroundColor: 'rgb(59, 130, 246)',
                                 pointBorderColor: '#fff',
                                 pointBorderWidth: 2,
-                                pointRadius: 5,
-                                pointHoverRadius: 7
+                                pointRadius: 4,
+                                pointHoverRadius: 6
                             }]
                         },
                         options: {
@@ -653,55 +1119,46 @@
                                     grid: { color: 'rgba(148, 163, 184, 0.1)' },
                                     ticks: {
                                         color: '#64748b',
+                                        font: { size: 10 },
                                         callback: function (value) { return '¥' + value; }
                                     }
                                 },
                                 x: {
                                     grid: { display: false },
-                                    ticks: { color: '#64748b' }
+                                    ticks: { color: '#64748b', font: { size: 10 } }
                                 }
                             }
                         }
                     });
                 }
 
-                // 失注理由 ドーナツグラフ
+                // 失注理由 ドーナツグラフ（凡例なし）
                 var lostCtx = document.getElementById('lostReasonsChart');
                 if (lostCtx) {
                     new Chart(lostCtx, {
                         type: 'doughnut',
                         data: {
-                            labels: ['品質懸念', '価格競争', '納期・仕様', '競合優位'],
+                            labels: ['技術継承不安', '価格競争', 'その他'],
                             datasets: [{
-                                data: [45, 30, 15, 10],
+                                data: [45, 30, 25],
                                 backgroundColor: [
                                     'rgb(99, 102, 241)',   // Indigo
                                     'rgb(59, 130, 246)',   // Blue
-                                    'rgb(100, 116, 139)',  // Slate
-                                    'rgb(20, 184, 166)'    // Teal
+                                    'rgb(148, 163, 184)'   // Slate
                                 ],
                                 borderWidth: 0,
-                                hoverOffset: 8
+                                hoverOffset: 10
                             }]
                         },
                         options: {
                             responsive: true,
                             maintainAspectRatio: false,
-                            cutout: '65%',
+                            cutout: '70%',
                             animation: { duration: 1200, easing: 'easeOutQuart' },
                             plugins: {
-                                legend: {
-                                    position: 'bottom',
-                                    labels: {
-                                        color: '#64748b',
-                                        font: { size: 11 },
-                                        padding: 12,
-                                        usePointStyle: true,
-                                        pointStyle: 'circle'
-                                    }
-                                },
+                                legend: { display: false },
                                 tooltip: {
-                                    backgroundColor: 'rgba(30, 41, 59, 0.9)',
+                                    backgroundColor: 'rgba(30, 41, 59, 0.95)',
                                     titleColor: '#fff',
                                     bodyColor: '#94a3b8',
                                     padding: 12,
@@ -806,6 +1263,71 @@
                     saveBtn.innerHTML = '<span class="mr-2">💾</span> DBに保存';
                     saveBtn.classList.remove('bg-green-600', 'border-green-400');
                 }, 2000);
+            });
+
+            // ===== PDF出力機能 =====
+            var pdfBtn = document.getElementById('pdf-btn');
+            pdfBtn.addEventListener('click', function () {
+                if (pdfBtn.disabled) return;
+
+                var outputText = document.getElementById('output').innerText;
+                if (!outputText || outputText.includes('解析中')) {
+                    showToast('⚠️ 出力するレポートがありません', 'error');
+                    return;
+                }
+
+                // ボタン無効化
+                pdfBtn.disabled = true;
+                pdfBtn.innerHTML = '<span class="mr-1">⏳</span> 生成中...';
+                pdfBtn.classList.add('opacity-70', 'cursor-not-allowed');
+
+                // PDF用コンテンツを作成（ヘッダー付き）
+                var today = new Date();
+                var dateStr = today.getFullYear() +
+                    ('0' + (today.getMonth() + 1)).slice(-2) +
+                    ('0' + today.getDate()).slice(-2);
+                var filename = 'Strategy_Report_' + dateStr + '.pdf';
+
+                // PDF用のラッパーを作成
+                var pdfWrapper = document.createElement('div');
+                pdfWrapper.style.cssText = 'padding: 20px; font-family: "Noto Sans JP", sans-serif; background: white; color: #1e293b;';
+                pdfWrapper.innerHTML =
+                    '<div style="text-align: center; margin-bottom: 20px; border-bottom: 2px solid #3b82f6; padding-bottom: 15px;">' +
+                    '<p style="font-size: 10px; color: #94a3b8; letter-spacing: 2px; margin-bottom: 5px;">CONFIDENTIAL</p>' +
+                    '<h1 style="font-size: 18px; font-weight: bold; color: #1e293b; margin: 0;">MFG Base AI Report</h1>' +
+                    '<p style="font-size: 11px; color: #64748b; margin-top: 5px;">Generated: ' + today.toLocaleString('ja-JP') + '</p>' +
+                    '</div>' +
+                    '<div style="white-space: pre-wrap; font-size: 12px; line-height: 1.8; font-family: monospace;">' +
+                    outputText.replace(/</g, '&lt;').replace(/>/g, '&gt;') +
+                    '</div>' +
+                    '<div style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e2e8f0; text-align: center;">' +
+                    '<p style="font-size: 9px; color: #94a3b8;">Powered by SOLVAN Inc. | MFG Base AI Sales Director</p>' +
+                    '</div>';
+
+                document.body.appendChild(pdfWrapper);
+
+                var opt = {
+                    margin: 10,
+                    filename: filename,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+
+                html2pdf().set(opt).from(pdfWrapper).save().then(function () {
+                    document.body.removeChild(pdfWrapper);
+                    pdfBtn.innerHTML = '<span class="mr-1">📄</span> PDF出力';
+                    pdfBtn.disabled = false;
+                    pdfBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    showToast('✅ PDFをダウンロードしました', 'success');
+                }).catch(function (err) {
+                    document.body.removeChild(pdfWrapper);
+                    pdfBtn.innerHTML = '<span class="mr-1">📄</span> PDF出力';
+                    pdfBtn.disabled = false;
+                    pdfBtn.classList.remove('opacity-70', 'cursor-not-allowed');
+                    showToast('⚠️ PDF生成に失敗しました', 'error');
+                    console.error('PDF Error:', err);
+                });
             });
 
             // ===== 音声入力 (Web Speech API) =====
